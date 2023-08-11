@@ -1,13 +1,23 @@
-﻿using System.Security.AccessControl;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.AccessControl;
 
 namespace NoteAPI.Models
 {
     public class Note
     {
+        [Column("Title")]
         public string Title { get; set; }
+
+        [Column("Description")]
         public string Description { get; set; }
+
+        [Key]
         public Guid Id { get;  }
+
+        [Column("CreatedDate")]
         public DateTime CreatedDate { get; set; }
+        
 
         public Note(string title, string description, Guid id, DateTime createdDate) 
         {
@@ -18,9 +28,6 @@ namespace NoteAPI.Models
   
         }
 
-        internal Task GetNoteByIdAsync(Guid id)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }
