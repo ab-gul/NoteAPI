@@ -10,10 +10,10 @@ namespace NoteAPI.Controllers
     [ApiController]
     public class NoteController : ControllerBase
     {
-        private readonly INoteService noteController;
+        private readonly INoteService noteService;
         public NoteController(INoteService noteController)
         {
-            this.noteController = noteController;
+            this.noteService = noteService;
         }
 
         [HttpGet]
@@ -21,7 +21,7 @@ namespace NoteAPI.Controllers
         {
             List<GetNoteResponse> allNotes = new();
 
-            var note = await noteController.GetAllNotesAync();
+            var note = await noteService.GetAllNotesAync();
 
             foreach (var i in note)
             {
@@ -39,7 +39,7 @@ namespace NoteAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetNoteByIdAsync([FromRoute] Guid id)
         {
-            var note = await noteController.GetNoteByIdAsync(id);
+            var note = await noteService.GetNoteByIdAsync(id);
 
             return note != null ? Ok(new GetNoteResponse
             {
@@ -56,11 +56,11 @@ namespace NoteAPI.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteNoteAsync([FromRoute] Guid id)
         {
-            var note = await noteController.GetNoteByIdAsync(id);
+            var note = await noteService.GetNoteByIdAsync(id);
 
             if (note != null) return NotFound($" The note with given id:{id} is not found");
 
-            await noteController.DeleteNoteAsync(id);
+            await noteService.DeleteNoteAsync(id);
 
             return NoContent();
 
@@ -70,7 +70,7 @@ namespace NoteAPI.Controllers
         public async Task<IActionResult> UpdateNoteAsync([FromRoute] Guid id,
         [FromBody] UpdateNoteRequest newNote)
         {
-            var note = await noteController.GetNoteByIdAsync(id);
+            var note = await noteService.GetNoteByIdAsync(id);
 
             if (note != null) new GetNoteResponse
             {
