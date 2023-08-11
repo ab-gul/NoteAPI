@@ -1,6 +1,6 @@
 ﻿namespace NoteAPI.DTOs.NoteRequests
 {
-    public class Requests
+    public class Request
     {
         public class GetNoteRequest
         {
