@@ -6,39 +6,39 @@ namespace NoteAPI.Services
 {
     public class NoteService : INoteService
     {
-        private readonly INoteRepository noteService;
+        private readonly INoteRepository noteRepository;
 
-        public NoteService(INoteRepository noteService)
+        public NoteService(INoteRepository noteRepository)
         { 
-        this.noteService = noteService; 
+        this.noteRepository = noteRepository; 
         }
 
         public async Task<Note?> AddNoteAsync(Note newNote)
         {
-           await noteService.AddNoteAsync(newNote);
-           return await noteService.GetNoteByIdAsync(newNote.Id);
+           await noteRepository.AddNoteAsync(newNote);
+           return await noteRepository.GetNoteByIdAsync(newNote.Id);
       
         }
 
         public async Task DeleteNoteAsync(Guid id)
         {
-         await noteService.DeleteNoteAsync(id);
+         await noteRepository.DeleteNoteAsync(id);
          
         }
 
         public async Task<List<Note>> GetAllNotesAync()
         {
-            return await noteService.GetAllNotesAync();
+            return await noteRepository.GetAllNotesAync();
         }
 
         public async Task<Note?> GetNoteByIdAsync(Guid id)
         {
-            return await noteService.GetNoteByIdAsync(id);
+            return await noteRepository.GetNoteByIdAsync(id);
         }
 
         public async Task UpdateNoteAsync(Note newNote)
         {
-            await noteService.UpdateNoteAsync(newNote);
+            await noteRepository.UpdateNoteAsync(newNote);
         }
     }
 }
