@@ -1,4 +1,4 @@
-﻿using NoteAPI.Models;
+﻿using NoteAPI.Domain;
 
 namespace NoteAPI.Repositories
 {

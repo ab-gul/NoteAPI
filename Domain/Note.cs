@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.AccessControl;
 
-namespace NoteAPI.Models
+namespace NoteAPI.Domain
 {
     public class Note
     {

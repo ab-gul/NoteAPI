@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NoteAPI.Models;
+using NoteAPI.Domain;
 
 namespace NoteAPI.Data
 {

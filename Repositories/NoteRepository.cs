@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NoteAPI.Data;
-using NoteAPI.Models;
+using NoteAPI.Domain;
 
 namespace NoteAPI.Repositories
 {
