@@ -1,4 +1,5 @@
-﻿using NoteAPI.Data;
+﻿using CollectionAPI.Repositories;
+using NoteAPI.Data;
 using NoteAPI.Domain;
 using NoteAPI.Repositories;
 
@@ -8,15 +9,15 @@ namespace CollectionAPI.Services
     {
         private readonly ICollectionRepository collectionRepository;
 
-        public CollectionService(ICollectionRepository CollectionRepository)
+        public CollectionService(ICollectionRepository collectionRepository)
         { 
-        this.collectionRepository = CollectionRepository; 
+        this.collectionRepository = collectionRepository; 
         }
 
         public async Task<Collection?> AddCollectionAsync(Collection newCollection)
         {
            await collectionRepository.AddCollectionAsync(newCollection);
-           return await collectionRepository.GetCollectionByIdAsync(newCollection.Id);
+           return await collectionRepository.GetCollectionByIdAsync(newCollection.ID);
       
         }
 
