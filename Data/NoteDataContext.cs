@@ -7,8 +7,8 @@ namespace NoteAPI.Data
     {
         public NoteDataContext(DbContextOptions<NoteDataContext> options) : base(options) { }
 
-        public DbSet<Note> Note { get; set; }
+        public DbSet<Note> Note { get; init; }
 
-        public DbSet<Collection> Collection { get; set; }
+        public DbSet<Collection> Collection { get; init; }
     }
 }
