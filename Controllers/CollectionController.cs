@@ -1,12 +1,6 @@
 ﻿using CollectionAPI.Services;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
-using NoteAPI.Domain;
-using NoteAPI.DTOs.NoteResponses;
-using System.ComponentModel;
-using System.Reflection;
-using static NoteAPI.DTOs.NoteResponses.CollectionResponse;
-using RouteAttribute = Microsoft.AspNetCore.Components.RouteAttribute;
+using static NoteAPI.DTOs.CollectionResponses.CollectionResponse;
 
 namespace NoteAPI.Controllers;
 
@@ -45,6 +39,8 @@ public class CollectionController : ControllerBase
         return collect.Any() ? Ok(collect) : NoContent();
     }
 
+
+    [HttpGet("{id:G}")]
     public async Task<IActionResult> GetCollectionById([FromRoute]Guid id) 
     {
        var collection = await collectionService.GetCollectionByIdAsync(id); 
@@ -59,6 +55,7 @@ public class CollectionController : ControllerBase
     
     }
 
+    [HttpDelete]
     public async Task<IActionResult> DeleteCollectionAsync([FromRoute]Guid id) 
     {
     
@@ -70,6 +67,7 @@ public class CollectionController : ControllerBase
         return NotFound();
     }
 
+    [HttpPut]
     public async Task<IActionResult> UpdateCollectionAsync([FromRoute]Guid id, [FromBody]string text) 
     {
      var collection = await collectionService.GetCollectionByIdAsync(id);

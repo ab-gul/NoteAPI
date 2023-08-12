@@ -8,6 +8,7 @@ using NoteAPI.Repositories;
 using NoteAPI.Services;
 using System.Globalization;
 using System.Reflection;
+using NoteAPI.Controllers;
 
 namespace NoteAPI
 {
@@ -40,6 +41,7 @@ namespace NoteAPI
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
+
             app.UseMiddleware<GlobalExceptionHandlingMiddleWare>();
 
             app.MapControllers();

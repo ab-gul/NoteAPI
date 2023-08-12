@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NoteAPI.Services;
-using System.Runtime.CompilerServices;
-using static NoteAPI.DTOs.NoteRequests.CollectionRequest;
-using static NoteAPI.DTOs.NoteResponses.CollectionResponse;
 using static NoteAPI.DTOs.NoteResponses.Response;
 
 namespace NoteAPI.Controllers
@@ -12,7 +9,7 @@ namespace NoteAPI.Controllers
     public class NoteController : ControllerBase
     {
         private readonly INoteService noteService;
-        public NoteController(INoteService noteController)
+        public NoteController(INoteService noteService)
         {
             this.noteService = noteService;
         }
@@ -65,8 +62,8 @@ namespace NoteAPI.Controllers
 
             return NoContent();
 
-
         }
+
         [HttpPut]
         public async Task<IActionResult> UpdateNoteAsync([FromRoute] Guid id,
         [FromBody] UpdateNoteResponse newNote)

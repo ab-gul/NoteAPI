@@ -1,4 +1,4 @@
-﻿namespace NoteAPI.DTOs.NoteRequests
+﻿namespace NoteAPI.DTOs.CollectionRequests
 {
     public class CollectionRequest
     {

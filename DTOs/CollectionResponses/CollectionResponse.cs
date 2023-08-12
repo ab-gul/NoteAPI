@@ -1,4 +1,4 @@
-﻿namespace NoteAPI.DTOs.NoteResponses
+﻿namespace NoteAPI.DTOs.CollectionResponses
 {
     public class CollectionResponse
     {
