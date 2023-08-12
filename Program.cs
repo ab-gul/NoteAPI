@@ -28,7 +28,7 @@ namespace NoteAPI
             builder.Services.AddControllers();
             builder.Services.AddScoped<INoteService, NoteService>();
             builder.Services.AddScoped<INoteRepository, NoteRepository>();
-            //builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             var app = builder.Build();
             // Configure the HTTP request pipeline.
