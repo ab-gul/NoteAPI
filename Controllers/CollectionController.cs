@@ -1,112 +1,113 @@
-﻿using CollectionAPI.Services;
+﻿using AutoMapper;
+using Azure.Core;
+using CollectionAPI.Services;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
-using static NoteAPI.DTOs.CollectionResponses.CollectionResponse;
+using NoteAPI.Common;
+using NoteAPI.Domain;
+using NoteAPI.DTOs.Collections;
+using NoteAPI.DTOs.Notes;
+using static NoteAPI.Common.ApiRoutes;
+
 
 namespace NoteAPI.Controllers;
 
 
-[Route("api/[controller]")]
-[ApiController]
+
 public class CollectionController : ControllerBase
 {
     private readonly ICollectionService collectionService;
-
-    public CollectionController(ICollectionService collectionService)
+    private readonly IMapper mapper;
+    public CollectionController(ICollectionService collectionService, IMapper mapper)
     {
         this.collectionService = collectionService;
+        this.mapper = mapper;
     }
 
-    [HttpGet]
+    [HttpGet(ApiRoutes.Collections.GetAll)]
     public async Task<IActionResult> GetAllCollectionsAync()
     {
 
-        List<GetCollectionResponse> response = new();
-        var collect = await collectionService.GetAllCollectionsAync();
+        var collection = await collectionService.GetAllCollectionsAync();
 
-        foreach (var i in collect)
-        {
-            response.Add(new GetCollectionResponse
-            {
+        return Ok(mapper.Map<List<GetCollectionResponse>>(collection));
 
-                Id = i.ID,
-                Title = i.Title,
-                Description = i.Description,
-                CreatedDate = i.CreatedDate
-
-            });
-        }
-
-        return collect.Any() ? Ok(collect) : NoContent();
     }
 
 
-    [HttpGet("{id:G}")]
-    public async Task<IActionResult> GetCollectionById([FromRoute]Guid id) 
+    [HttpGet(ApiRoutes.Collections.Get)]
+    public async Task<IActionResult> GetCollectionById([FromRoute] Guid id)
     {
-       var collection = await collectionService.GetCollectionByIdAsync(id); 
-    
-      return collection != null ? Ok(new GetCollectionResponse {
-       Id = id,
-       Title = collection.Title,
-       Description = collection.Description,
-       CreatedDate = collection.CreatedDate
+        var collection = await collectionService.GetCollectionByIdAsync(id);
+        return collection != null
+               ? Ok(mapper.Map<GetCollectionResponse>(collection))
+               : NotFound($"Collection with given id: {id} does not exists!");
 
-      }) : NoContent();
-    
     }
 
-    [HttpDelete]
-    public async Task<IActionResult> DeleteCollectionAsync([FromRoute]Guid id) 
+    [HttpDelete(ApiRoutes.Collections.Delete)]
+    public async Task<IActionResult> DeleteCollectionAsync([FromRoute] Guid id)
     {
-    
-      var collection = await collectionService.GetCollectionByIdAsync(id);
+
+        var collection = await collectionService.GetCollectionByIdAsync(id);
 
         if (collection != null) { NotFound(); }
 
         await collectionService.DeleteCollectionAsync(id);
+
         return NotFound();
     }
 
-    [HttpPut]
-    public async Task<IActionResult> UpdateCollectionAsync([FromRoute]Guid id, [FromBody]string text) 
+    [HttpPut(ApiRoutes.Collections.Update)]
+    public async Task<IActionResult> UpdateCollectionAsync([FromRoute] Guid id, [FromBody] UpdateCollectionRequest request, [FromServices] IValidator<UpdateCollectionRequest> validator)
     {
-     var collection = await collectionService.GetCollectionByIdAsync(id);
-        if (collection != null) { new GetCollectionResponse {
-         Id = id,
-         Title = collection.Title, 
-         Description = collection.Description,
-         CreatedDate = collection.CreatedDate
-        
-        }; }
-        return Ok(collection);
+
+        ArgumentException.ThrowIfNullOrEmpty(nameof(validator));
+        ValidationResult validationResult = validator!.Validate(request);
+
+        if (!validationResult.IsValid) 
+        {
+            validationResult.AddToModelState(this.ModelState);
+
+            return ValidationProblem();
+
+        }
+        var collection = await collectionService.GetCollectionByIdAsync(id);
+
+        if (collection == null) { return NotFound($"Collection with given Id:{id} does not exist, please try again..."); };
+
+        var collectionToUpdate = mapper.Map<Collection>(request);
+
+        await collectionService.UpdateCollectionAsync(collectionToUpdate);
+
+        return NoContent();
     }
 
+    [HttpPost(ApiRoutes.Collections.Add)]
+    public async Task<IActionResult> AddCollectionAsync([FromBody] CreateCollectionRequest newCollection, [FromServices] IValidator <CreateCollectionRequest> validator)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(nameof(validator));
 
+        ValidationResult validationResult = validator!.Validate(newCollection);
 
+        if (!validationResult.IsValid)
+        {
+            validationResult.AddToModelState(this.ModelState);
 
+            return ValidationProblem();
+        }
 
+        ArgumentException.ThrowIfNullOrEmpty(nameof(validator));
 
+        var collection = mapper.Map<Collection>(newCollection);
 
+        var addedCollection = await collectionService.AddCollectionAsync(collection);
 
+        //TODO mapp domain to response
+        return Ok(addedCollection);
 
+    }
 
-
-
-
-
-
-
-
-}  
-            
-
-
-            
-
-
-
-
-
-
- 
-
+}

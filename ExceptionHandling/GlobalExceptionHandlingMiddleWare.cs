@@ -20,9 +20,6 @@ namespace NoteAPI.ExceptionHandling;
         {
             await next(context);
 
-
-
-
         }
         catch (Exception ex) 
         {
@@ -31,16 +28,23 @@ namespace NoteAPI.ExceptionHandling;
         
         }
     
-        async Task HandleExceptionAsync(HttpContext context, Exception message ) 
+        async Task HandleExceptionAsync(HttpContext context, Exception ex) 
         {
-            context.Response.ContentType = MediaTypeNames.Application.Json;
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            //TODO make an http static class to hold this value
 
 
+            var (statusCode, message) = ex switch
+            {
+             NotFoundException => (HttpStatusCode.NotFound, ex.Message), 
+             DuplicateCollectionException => ( HttpStatusCode.Conflict, ex.Message),
+             _ => (HttpStatusCode.InternalServerError, "Something bad happened please try again!")
+            };
 
-            var customResponse = new CustomExceptionResponse("Something bad happened please try again", context.Response.StatusCode, null);
+            context.Response.ContentType = "application/problem+json";
+            context.Response.StatusCode = (int)statusCode;
 
-            await context.Response.WriteAsJsonAsync(customResponse);
+
+            await context.Response.WriteAsJsonAsync(new { StatusCode = (int)statusCode, Message = message });
 
 
 

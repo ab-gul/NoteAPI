@@ -4,29 +4,16 @@ using System.Security.AccessControl;
 
 namespace NoteAPI.Domain
 {
-    public class Note
+    public class Note : Base
     {
-        [Column("Title")]
-        public string Title { get; set; }
+        [Column("FK_COLLECTION_ID")]
+        public Guid CollectionId { get; set; }
 
-        [Column("Description")]
-        public string Description { get; set; }
+        [Column("TITLE")]
+        public string Title { get; set; } = null! ;
 
-        [Key]
-        public Guid Id { get;  }
-
-        [Column("CreatedDate")]
-        public DateTime CreatedDate { get; set; }
-        
-
-        public Note(string title, string description, Guid id, DateTime createdDate) 
-        {
-            Title = title;
-            Description = description;
-            Id = id;
-            CreatedDate = createdDate;
-  
-        }
+        [Column("DESCRIPTION")]
+        public string? Description { get; set; }
 
         
     }

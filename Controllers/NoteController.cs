@@ -1,86 +1,110 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NoteAPI.DTOs.Notes;
 using NoteAPI.Services;
-using static NoteAPI.DTOs.NoteResponses.Response;
+using NoteAPI.Domain;
+using AutoMapper;
+using Azure.Core;
+using NoteAPI.Common;
+using FluentValidation;
+using FluentValidation.Results;
+using FluentValidation.AspNetCore;
+using NoteAPI.Mapping;
 
 namespace NoteAPI.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class NoteController : ControllerBase
     {
-        private readonly INoteService noteService;
-        public NoteController(INoteService noteService)
+        private readonly INoteService _noteService;
+        private readonly IMapper _mapper;
+        public NoteController(INoteService noteService, IMapper mapper)
         {
-            this.noteService = noteService;
+            _noteService = noteService;
+            _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllNotesAsync()
+        [HttpGet(ApiRoutes.Notes.GetAll)]
+        public async Task<IActionResult> GetAllNotesAsync([FromQuery] PaginationFilter query)
         {
-            List<GetNoteResponse> allNotes = new();
 
-            var note = await noteService.GetAllNotesAync();
+            var notes = await _noteService.GetAllNotesAync(10,2);
 
-            foreach (var i in note)
-            {
-                allNotes.Add(new GetNoteResponse
-                {
-                    Description = i.Description,
-                    Title = i.Title,
-                    CreatedDate = i.CreatedDate
-                });
+            var notesResponse = _mapper.Map<List<GetNoteResponse>>(notes);
 
-            }
-            return note.Any() ? Ok(note) : NoContent();
+            var paginationResponse = new PageResponse<GetNoteResponse>() ;
+
+            return Ok(paginationResponse);
         }
 
-        [HttpGet]
+        [HttpGet(ApiRoutes.Notes.Get)]
         public async Task<IActionResult> GetNoteByIdAsync([FromRoute] Guid id)
         {
-            var note = await noteService.GetNoteByIdAsync(id);
+            var note = await _noteService.GetNoteByIdAsync(id);
 
-            return note != null ? Ok(new GetNoteResponse
-            {
-                Title = note.Title,
-                CreatedDate = note.CreatedDate,
-                Description = note.Description,
-                Id = id
-
-            }) : NoContent();
-
+            return note != null
+                ? Ok(_mapper.Map<GetNoteResponse>(note))
+                : NotFound($"Note with given id: {id} does not exists!");
         }
 
 
-        [HttpDelete]
+        [HttpDelete(ApiRoutes.Notes.Delete)]
         public async Task<IActionResult> DeleteNoteAsync([FromRoute] Guid id)
         {
-            var note = await noteService.GetNoteByIdAsync(id);
+            var note = await _noteService.GetNoteByIdAsync(id);
 
-            if (note != null) return NotFound($" The note with given id:{id} is not found");
+            if (note == null) return NotFound($"Note with given id: {id} does not exists!");
 
-            await noteService.DeleteNoteAsync(id);
+            await _noteService.DeleteNoteAsync(id);
+
+            return NoContent();
+        }
+
+        [HttpPut(ApiRoutes.Notes.Update)]
+        public async Task<IActionResult> UpdateNoteAsync([FromRoute] Guid id, [FromBody] UpdateNoteRequest request,
+            [FromServices] IValidator<UpdateNoteRequest>? validator)
+        {
+
+            ArgumentException.ThrowIfNullOrEmpty(nameof(validator));
+
+            ValidationResult validationResult = validator!.Validate(request);
+
+            if (!validationResult.IsValid)
+            {
+                validationResult.AddToModelState(this.ModelState);
+
+                return ValidationProblem();
+            }
+
+           
+            var noteToUpdate = _mapper.Map<Note>(request);
+
+            await _noteService.UpdateNoteAsync(id,noteToUpdate);
 
             return NoContent();
 
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateNoteAsync([FromRoute] Guid id,
-        [FromBody] UpdateNoteResponse newNote)
+
+        [HttpPost(ApiRoutes.Notes.Add)]
+        public async Task<IActionResult> AddNoteAsync([FromBody] CreateNoteRequest request,
+            [FromServices] IValidator<CreateNoteRequest>? validator)
         {
-            var note = await noteService.GetNoteByIdAsync(id);
 
-            if (note != null) new GetNoteResponse
+            ArgumentException.ThrowIfNullOrEmpty(nameof(validator));
+
+            ValidationResult validationResult = validator!.Validate(request);
+
+            if (!validationResult.IsValid)
             {
-                Title = note.Title,
-                Description = note.Description,
-                CreatedDate = note.CreatedDate,
-                Id = id
-            };
-            return Ok(note);
+                validationResult.AddToModelState(this.ModelState);
+
+                return ValidationProblem();
+            }
+
+
+            var newNote = _mapper.Map<Note>(request);
+
+            return Ok(_mapper.Map<CreateNoteResponse>(await _noteService.AddNoteAsync(newNote)));
         }
-
-
 
 
 
