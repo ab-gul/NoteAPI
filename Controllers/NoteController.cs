@@ -3,12 +3,10 @@ using NoteAPI.DTOs.Notes;
 using NoteAPI.Services;
 using NoteAPI.Domain;
 using AutoMapper;
-using Azure.Core;
 using NoteAPI.Common;
+using NoteAPI.Common.Extensions;
 using FluentValidation;
 using FluentValidation.Results;
-using FluentValidation.AspNetCore;
-using NoteAPI.Mapping;
 
 namespace NoteAPI.Controllers
 {
@@ -23,16 +21,12 @@ namespace NoteAPI.Controllers
         }
 
         [HttpGet(ApiRoutes.Notes.GetAll)]
-        public async Task<IActionResult> GetAllNotesAsync([FromQuery] PaginationFilter query)
+        public async Task<IActionResult> GetAllNotesAsync()
         {
+            
+            dynamic notes = await _noteService.GetAllNotesAync();
 
-            var notes = await _noteService.GetAllNotesAync(10,2);
-
-            var notesResponse = _mapper.Map<List<GetNoteResponse>>(notes);
-
-            var paginationResponse = new PageResponse<GetNoteResponse>() ;
-
-            return Ok(paginationResponse);
+            return Ok( notes.FromListToList<Note,GetNoteResponse>(notes));
         }
 
         [HttpGet(ApiRoutes.Notes.Get)]
@@ -41,7 +35,7 @@ namespace NoteAPI.Controllers
             var note = await _noteService.GetNoteByIdAsync(id);
 
             return note != null
-                ? Ok(_mapper.Map<GetNoteResponse>(note))
+                ? Ok((GetNoteResponse)note)
                 : NotFound($"Note with given id: {id} does not exists!");
         }
 

@@ -1,5 +1,5 @@
-﻿using NoteAPI.Domain;
-using System.Net;
+﻿using System.Net;
+using NoteAPI.Domain;
 
 namespace NoteAPI.ExceptionHandling;
 
