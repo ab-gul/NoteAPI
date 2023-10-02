@@ -2,7 +2,6 @@
 using NoteAPI.DTOs.Notes;
 using NoteAPI.Services;
 using NoteAPI.Domain;
-using AutoMapper;
 using NoteAPI.Common;
 using NoteAPI.Common.Extensions;
 using FluentValidation;
@@ -13,20 +12,17 @@ namespace NoteAPI.Controllers
     public class NoteController : ControllerBase
     {
         private readonly INoteService _noteService;
-        private readonly IMapper _mapper;
-        public NoteController(INoteService noteService, IMapper mapper)
+        public NoteController(INoteService noteService)
         {
             _noteService = noteService;
-            _mapper = mapper;
         }
 
         [HttpGet(ApiRoutes.Notes.GetAll)]
         public async Task<IActionResult> GetAllNotesAsync()
         {
-            
-            dynamic notes = await _noteService.GetAllNotesAync();
+            var notes = await _noteService.GetAllNotesAync();
 
-            return Ok( notes.FromListToList<Note,GetNoteResponse>(notes));
+            return Ok(notes.Select(note => (GetNoteResponse)note));
         }
 
         [HttpGet(ApiRoutes.Notes.Get)]
@@ -69,9 +65,9 @@ namespace NoteAPI.Controllers
             }
 
            
-            var noteToUpdate = _mapper.Map<Note>(request);
+            var noteToUpdate = (Note)request;
 
-            await _noteService.UpdateNoteAsync(id,noteToUpdate);
+            await _noteService.UpdateNoteAsync(id, noteToUpdate);
 
             return NoContent();
 
@@ -95,9 +91,11 @@ namespace NoteAPI.Controllers
             }
 
 
-            var newNote = _mapper.Map<Note>(request);
+            var newNote = (Note)request;
 
-            return Ok(_mapper.Map<CreateNoteResponse>(await _noteService.AddNoteAsync(newNote)));
+            var addedNote = await _noteService.AddNoteAsync(newNote);
+
+            return Ok((CreateNoteResponse)addedNote);
         }
 
 

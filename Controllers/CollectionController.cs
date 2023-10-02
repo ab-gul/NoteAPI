@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Azure.Core;
+﻿using Azure.Core;
 using CollectionAPI.Services;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -19,20 +18,18 @@ namespace NoteAPI.Controllers;
 public class CollectionController : ControllerBase
 {
     private readonly ICollectionService collectionService;
-    private readonly IMapper mapper;
-    public CollectionController(ICollectionService collectionService, IMapper mapper)
+    public CollectionController(ICollectionService collectionService)
     {
         this.collectionService = collectionService;
-        this.mapper = mapper;
     }
 
     [HttpGet(ApiRoutes.Collections.GetAll)]
     public async Task<IActionResult> GetAllCollectionsAync()
     {
 
-        var collection = await collectionService.GetAllCollectionsAync();
+        var collections = await collectionService.GetAllCollectionsAync();
 
-        return Ok(mapper.Map<List<GetCollectionResponse>>(collection));
+        return Ok(collections.Select(collection => (GetCollectionResponse)collection));
 
     }
 
@@ -42,7 +39,7 @@ public class CollectionController : ControllerBase
     {
         var collection = await collectionService.GetCollectionByIdAsync(id);
         return collection != null
-               ? Ok(mapper.Map<GetCollectionResponse>(collection))
+               ? Ok((GetCollectionResponse)collection)
                : NotFound($"Collection with given id: {id} does not exists!");
 
     }
@@ -78,7 +75,7 @@ public class CollectionController : ControllerBase
 
         if (collection == null) { return NotFound($"Collection with given Id:{id} does not exist, please try again..."); };
 
-        var collectionToUpdate = mapper.Map<Collection>(request);
+        var collectionToUpdate = (Collection)request;
 
         await collectionService.UpdateCollectionAsync(collectionToUpdate);
 
@@ -101,12 +98,12 @@ public class CollectionController : ControllerBase
 
         ArgumentException.ThrowIfNullOrEmpty(nameof(validator));
 
-        var collection = mapper.Map<Collection>(newCollection);
+        var collection = (Collection)newCollection;
 
         var addedCollection = await collectionService.AddCollectionAsync(collection);
 
         //TODO mapp domain to response
-        return Ok(addedCollection);
+        return Ok((CreateCollectionResponse)addedCollection);
 
     }
 

@@ -53,12 +53,38 @@ namespace NoteAPI.Domain
 
         }
 
+        public static explicit operator Collection(CreateCollectionRequest request)
+        {
+            return new Collection
+            {
+                Id = Guid.NewGuid(),
+                Title = request.Title,
+                Description = request.Description,
+                UpdatedDate = DateTime.UtcNow,
+                CreatedDate = DateTime.UtcNow
+            };
+
+        }
+
+        public static explicit operator Collection(UpdateCollectionRequest request) 
+        {
+            return new Collection
+            {
+                Title = request.Title,
+                Description = request.Description,
+                UpdatedDate = DateTime.UtcNow,
+            };
+        
+        }
 
 
+
+
+    }
 
     }
 
 
 
     
-}
+
