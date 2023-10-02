@@ -4,7 +4,7 @@ using System.Net;
 
 namespace NoteAPI.ExceptionHandling;
 
-    public class  GlobalExceptionHandlingMiddleWare
+public class  GlobalExceptionHandlingMiddleWare
     {
      private readonly  RequestDelegate next;
      private readonly ILogger<GlobalExceptionHandlingMiddleWare> logger;
