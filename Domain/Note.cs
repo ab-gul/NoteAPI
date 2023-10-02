@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using NoteAPI.DTOs.Collections;
+using NoteAPI.DTOs.Notes;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.AccessControl;
 
@@ -15,6 +17,80 @@ namespace NoteAPI.Domain
         [Column("DESCRIPTION")]
         public string? Description { get; set; }
 
+
+        public static explicit operator Note(CreateNoteRequest request) 
+        {
+
+            return new Note
+            { 
+                Id = Guid.NewGuid(),
+                Title = request.Title,
+                Description = request.Description,
+                CollectionId = request.CollectionId,
+                CreatedDate = DateTime.UtcNow,
+                UpdatedDate = DateTime.UtcNow
+
+            };
         
+        
+        }
+
+        public static explicit operator Note(UpdateNoteRequest upRequest)
+        {
+
+            return new Note
+            {
+                Id = Guid.NewGuid(),
+                Title = upRequest.Title,
+                Description = upRequest.Description,
+                UpdatedDate = DateTime.UtcNow,
+
+            };
+
+
+        }   
+        
+
+
+        public static explicit operator GetNoteResponse(Note note) 
+        {
+            return new GetNoteResponse(
+                Id: note.Id,
+                CollectionId: note.CollectionId,
+                Title: note.Title,
+                Description: note.Description,
+                UpdatedAt: note.UpdatedDate,
+                CreatedDate: note.CreatedDate);
+        }
+
+
+
+        public static explicit operator CreateNoteResponse(Note note)
+        {
+            return new CreateNoteResponse(
+                Id: note.Id,
+                CollectionId: note.CollectionId,
+                Title: note.Title,
+                Description: note.Description,
+                CreatedDate: note.CreatedDate,
+                UpdatedAt: note.UpdatedDate
+
+                );
+
+        }
+        public static explicit operator UpdateNoteResponse(Note note)
+        {
+            return new UpdateNoteResponse(
+                  
+                Id: note.Id,
+                Title: note.Title,
+                Description: note.Description,
+                UpdatedDate: note.UpdatedDate
+
+                );
+        
+        }
+        
+
     }
 }

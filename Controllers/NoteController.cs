@@ -2,37 +2,27 @@
 using NoteAPI.DTOs.Notes;
 using NoteAPI.Services;
 using NoteAPI.Domain;
-using AutoMapper;
-using Azure.Core;
 using NoteAPI.Common;
+using NoteAPI.Common.Extensions;
 using FluentValidation;
 using FluentValidation.Results;
-using FluentValidation.AspNetCore;
-using NoteAPI.Mapping;
 
 namespace NoteAPI.Controllers
 {
     public class NoteController : ControllerBase
     {
         private readonly INoteService _noteService;
-        private readonly IMapper _mapper;
-        public NoteController(INoteService noteService, IMapper mapper)
+        public NoteController(INoteService noteService)
         {
             _noteService = noteService;
-            _mapper = mapper;
         }
 
         [HttpGet(ApiRoutes.Notes.GetAll)]
-        public async Task<IActionResult> GetAllNotesAsync([FromQuery] PaginationFilter query)
+        public async Task<IActionResult> GetAllNotesAsync()
         {
+            var notes = await _noteService.GetAllNotesAync();
 
-            var notes = await _noteService.GetAllNotesAync(10,2);
-
-            var notesResponse = _mapper.Map<List<GetNoteResponse>>(notes);
-
-            var paginationResponse = new PageResponse<GetNoteResponse>() ;
-
-            return Ok(paginationResponse);
+            return Ok(notes.Select(note => (GetNoteResponse)note));
         }
 
         [HttpGet(ApiRoutes.Notes.Get)]
@@ -41,7 +31,7 @@ namespace NoteAPI.Controllers
             var note = await _noteService.GetNoteByIdAsync(id);
 
             return note != null
-                ? Ok(_mapper.Map<GetNoteResponse>(note))
+                ? Ok((GetNoteResponse)note)
                 : NotFound($"Note with given id: {id} does not exists!");
         }
 
@@ -75,9 +65,9 @@ namespace NoteAPI.Controllers
             }
 
            
-            var noteToUpdate = _mapper.Map<Note>(request);
+            var noteToUpdate = (Note)request;
 
-            await _noteService.UpdateNoteAsync(id,noteToUpdate);
+            await _noteService.UpdateNoteAsync(id, noteToUpdate);
 
             return NoContent();
 
@@ -101,9 +91,11 @@ namespace NoteAPI.Controllers
             }
 
 
-            var newNote = _mapper.Map<Note>(request);
+            var newNote = (Note)request;
 
-            return Ok(_mapper.Map<CreateNoteResponse>(await _noteService.AddNoteAsync(newNote)));
+            var addedNote = await _noteService.AddNoteAsync(newNote);
+
+            return Ok((CreateNoteResponse)addedNote);
         }
 
 
