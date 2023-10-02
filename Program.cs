@@ -40,7 +40,6 @@ namespace NoteAPI
 
             #region 3rd Party
             
-            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
             builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             
             #endregion
