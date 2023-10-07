@@ -9,47 +9,60 @@ namespace NoteAPI.Domain
     public class Note : Base
     {
         [Column("FK_COLLECTION_ID")]
-        public Guid CollectionId { get; set; }
+        public Guid CollectionId { get; }
 
         [Column("TITLE")]
-        public string Title { get; set; } = null! ;
+        public string Title { get; } = null!;
 
         [Column("DESCRIPTION")]
-        public string? Description { get; set; }
+        public string? Description { get; }
 
-
-        public static explicit operator Note(CreateNoteRequest request) 
+        public Note(Guid id, Guid collectionId, string title, DateTime createdDate, DateTime updatedDate ,string? description = null)
         {
+            CollectionId = id;
+            Title = title;
+            Description = description;
+            CreatedDate = createdDate;
+            UpdatedDate = updatedDate;
+            CollectionId = collectionId;
 
-            return new Note
-            { 
-                Id = Guid.NewGuid(),
-                Title = request.Title,
-                Description = request.Description,
-                CollectionId = request.CollectionId,
-                CreatedDate = DateTime.UtcNow,
-                UpdatedDate = DateTime.UtcNow
-
-            };
-        
-        
         }
 
-        public static explicit operator Note(UpdateNoteRequest upRequest)
+
+        public static explicit operator Note(CreateNoteRequest request)
         {
 
             return new Note
-            {
-                Id = Guid.NewGuid(),
-                Title = upRequest.Title,
-                Description = upRequest.Description,
-                UpdatedDate = DateTime.UtcNow,
+                 
+               (
+                 id: Guid.NewGuid(),
+                 request.CollectionId,
+                 request.Title,
+                 DateTime.UtcNow,
+                 DateTime.UtcNow,
+                 request.Description
 
-            };
+                );
+          
+            
+        }
 
+        public static explicit operator Note(UpdateNoteRequest request)
+        {
 
-        }   
-        
+            return new Note
+
+            (
+                Guid.NewGuid(),
+                Guid.NewGuid(),
+                request.Title,
+                DateTime.UtcNow,
+                DateTime.UtcNow,
+                request.Description
+
+            );
+        }
+
 
 
         public static explicit operator GetNoteResponse(Note note) 
@@ -86,7 +99,6 @@ namespace NoteAPI.Domain
                 Title: note.Title,
                 Description: note.Description,
                 UpdatedDate: note.UpdatedDate
-
                 );
         
         }
