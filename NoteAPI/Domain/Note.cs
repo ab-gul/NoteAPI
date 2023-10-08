@@ -1,4 +1,5 @@
-﻿using NoteAPI.DTOs.Collections;
+﻿using Microsoft.IdentityModel.Tokens;
+using NoteAPI.DTOs.Collections;
 using NoteAPI.DTOs.Notes;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -19,12 +20,12 @@ namespace NoteAPI.Domain
 
         public Note(Guid id, Guid collectionId, string title, DateTime createdDate, DateTime updatedDate ,string? description = null)
         {
-            this.CollectionId = id;
-            this.Title = title;
+            this.Id = id;
+            this.CollectionId = collectionId;
+            this.Title = string.IsNullOrEmpty(title) ? "Unnamed" : title;
             this.Description = description;
             this.CreatedDate = createdDate;
             this.UpdatedDate = updatedDate;
-            this.CollectionId = collectionId;
 
         }
 
@@ -53,14 +54,15 @@ namespace NoteAPI.Domain
             return new Note
 
             (
-               request.CollectionId ?? Guid.Empty,
-                Guid.NewGuid(),
+                Guid.Empty,
+                request.CollectionId ?? Guid.Empty,
                 request.Title,
+                default(DateTime),
                 DateTime.UtcNow,
-                DateTime.UtcNow,
-                request.Description
+                request.Description 
+                ); 
 
-            );
+            
         }
 
 
