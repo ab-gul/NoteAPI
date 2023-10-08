@@ -19,12 +19,12 @@ namespace NoteAPI.Domain
 
         public Note(Guid id, Guid collectionId, string title, DateTime createdDate, DateTime updatedDate ,string? description = null)
         {
-            CollectionId = id;
-            Title = title;
-            Description = description;
-            CreatedDate = createdDate;
-            UpdatedDate = updatedDate;
-            CollectionId = collectionId;
+            this.CollectionId = id;
+            this.Title = title;
+            this.Description = description;
+            this.CreatedDate = createdDate;
+            this.UpdatedDate = updatedDate;
+            this.CollectionId = collectionId;
 
         }
 
@@ -53,7 +53,7 @@ namespace NoteAPI.Domain
             return new Note
 
             (
-                Guid.NewGuid(),
+               request.CollectionId ?? Guid.Empty,
                 Guid.NewGuid(),
                 request.Title,
                 DateTime.UtcNow,
@@ -94,7 +94,6 @@ namespace NoteAPI.Domain
         public static explicit operator UpdateNoteResponse(Note note)
         {
             return new UpdateNoteResponse(
-                  
                 Id: note.Id,
                 Title: note.Title,
                 Description: note.Description,
