@@ -12,13 +12,13 @@ namespace NoteAPI.Services
     public class NoteService : INoteService
     {
         private readonly INoteRepository _noteRepository;
-        private readonly ICollectionRepository _collectionRepository;
+        private readonly ICollectionService _collectionService;
 
 
-        public NoteService(INoteRepository noteRepository, ICollectionRepository collectionRepository)
+        public NoteService(INoteRepository noteRepository, ICollectionService collectionService)
         {
             _noteRepository = noteRepository;
-            _collectionRepository = collectionRepository;
+            _collectionService = collectionService;
         }
         public async Task<Note> AddNoteAsync(Note newNote)
         {
