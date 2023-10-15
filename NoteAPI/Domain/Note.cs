@@ -10,13 +10,15 @@ namespace NoteAPI.Domain
     public class Note : Base
     {
         [Column("FK_COLLECTION_ID")]
-        public Guid CollectionId { get; }
+        public Guid CollectionId { get; private set; }
 
         [Column("TITLE")]
-        public string Title { get; } = null!;
+        public string Title { get; private set; } = null!;
 
         [Column("DESCRIPTION")]
-        public string? Description { get; }
+        public string? Description { get; private set; }
+
+        private Note() { }
 
         public Note(Guid id, Guid collectionId, string title, DateTime createdDate, DateTime updatedDate ,string? description = null)
         {
