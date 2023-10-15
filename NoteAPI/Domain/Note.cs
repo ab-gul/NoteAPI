@@ -3,6 +3,7 @@ using NoteAPI.DTOs.Collections;
 using NoteAPI.DTOs.Notes;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.CompilerServices;
 using System.Security.AccessControl;
 
 namespace NoteAPI.Domain
@@ -32,19 +33,23 @@ namespace NoteAPI.Domain
         }
 
 
+
+
+
+
+        #region Mappings
         public static explicit operator Note(CreateNoteRequest request)
         {
 
             return new Note
                  
                (
-                 id: Guid.NewGuid(),
+                 Guid.NewGuid(),
                  request.CollectionId,
                  request.Title,
                  DateTime.UtcNow,
                  DateTime.UtcNow,
-                 request.Description
-
+                 request.Description ?? string.Empty
                 );
           
             
@@ -105,7 +110,7 @@ namespace NoteAPI.Domain
                 );
         
         }
-        
 
+        #endregion
     }
 }
