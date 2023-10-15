@@ -14,6 +14,7 @@ namespace CollectionAPI.Services
         Task<Collection> AddCollectionAsync(Collection newCollection);
         Task UpdateCollectionAsync(Collection newCollection);
         Task<Collection?> GetCollectionByTitleAsync(string name);
+        Task<bool> HasCollectionAsync(Guid id);
 
     }
 }

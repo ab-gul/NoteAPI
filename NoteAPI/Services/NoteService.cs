@@ -22,13 +22,9 @@ namespace NoteAPI.Services
         }
         public async Task<Note> AddNoteAsync(Note newNote)
         {
-            //checking if collection with given id exists
-           var collection = await _collectionRepository.GetByIdAsync(newNote.CollectionId);
-
-            //if not throw custom exception
-           NotFoundException.ThrowIfNull(collection, newNote.CollectionId, nameof(Collection));
-
-           return await _noteRepository.AddAsync(newNote);
+            return await _collectionService.HasCollectionAsync(newNote.CollectionId)
+                   ? await _noteRepository.AddAsync(newNote)
+                   : throw new NotFoundException($"Collection with given Id : {newNote.CollectionId} does not exist!");
         }
 
         public async Task DeleteNoteAsync(Guid id)
@@ -51,31 +47,24 @@ namespace NoteAPI.Services
         {
             //checking if note with given id exists
 
-            var note = await _noteRepository.GetByIdAsync(id);
+            var oldNote = await _noteRepository.GetByIdAsync(id);
 
-            NotFoundException.ThrowIfNull(note,id, nameof(Note));
+            NotFoundException.ThrowIfNull(oldNote,id, nameof(Note));
 
             //
-       
+            // TODO add custom logic for title and description
 
-            if (newNote.CollectionId != Guid.Empty)
-            {
-                //checking if collection with given id exists
-                var collection = await _collectionRepository.GetByIdAsync(newNote.CollectionId);
+            oldNote!.EditNote(new Note(
+                newNote.CollectionId == Guid.Empty
+                ? oldNote.CollectionId
+                : (await _collectionService.HasCollectionAsync(newNote.CollectionId)
+                            ? newNote.CollectionId
+                            : throw new NotFoundException($"Collection with given Id:{newNote.CollectionId} does not exist!")),
+                newNote.Title ?? oldNote.Title,
+                newNote.Description ?? oldNote.Description!,
+                newNote.UpdatedDate));
 
-                //if not throw custom exception
-                NotFoundException.ThrowIfNull(collection, newNote.CollectionId, nameof(Collection));
-
-                //else
-                var result = new Note(id, collectionId: newNote.CollectionId, title: newNote.Title, 
-                    createdDate: newNote.CreatedDate, updatedDate: newNote.UpdatedDate);
-
-                await _noteRepository.UpdateAsync(newNote);
-                
-                
-                    
-            };
-                
+            await _noteRepository.UpdateAsync(oldNote);
             }
            
         }

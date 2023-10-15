@@ -48,5 +48,10 @@ namespace CollectionAPI.Services
         {
            return await _collectionRepository.GetCollectionByTitleAsync(name);
         }
+
+        public async Task<bool> HasCollectionAsync(Guid id)
+        {
+           return await _collectionRepository.HasCollectionAsync(id);
+        }
     }
 }

@@ -17,5 +17,10 @@ namespace NoteAPI.Repositories.Concrete
            return await  _entities.FirstOrDefaultAsync(c => c.Title == title);
             
         }
+
+        public async Task<bool> HasCollectionAsync(Guid id)
+        {
+           return await _entities.AnyAsync(c  => c.Id == id);
+        }
     }
 }
