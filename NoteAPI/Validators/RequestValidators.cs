@@ -11,7 +11,8 @@ namespace NoteAPI.Validators
         {
             if (Guid.TryParse(unValidatedGuid.ToString(), out Guid validatedGuid))
             {
-                return true;
+                return validatedGuid == Guid.Empty;
+                  
             }
             else
             {
@@ -24,7 +25,8 @@ namespace NoteAPI.Validators
         {
             if (Guid.TryParse(unValidatedGuid.ToString(), out Guid validatedGuid))
             {
-                return true;
+                return validatedGuid == Guid.Empty;
+                
             }
             else
             {
@@ -41,9 +43,8 @@ namespace NoteAPI.Validators
             {
                 RuleFor(c => c.CollectionId)
                     .Must(IsValidGuid)
-                    .WithMessage("\'CollectionId\' section must be given valid Guid type ")
-                    .NotEmpty()
-                    .WithMessage("You must provide valid Guid for \'collectionId\'");
+                    .WithMessage("\'CollectionId\' section must be given valid Guid type ");
+                    
 
                 RuleFor(c => c.Title)
                     .NotNull()
@@ -65,7 +66,6 @@ namespace NoteAPI.Validators
             {
                 RuleFor(c => c.CollectionId)
                     .Must(IsValidGuid).When(d => d.CollectionId != null)
-                    .NotEmpty().When(d => d.CollectionId != null)
                     .WithMessage("You must provide valid Guid for collection Id");
                
 

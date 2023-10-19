@@ -31,16 +31,12 @@ namespace NoteAPI.Domain
             this.UpdatedDate = updatedDate;
         }
 
-        public Note(Guid collectionId, string title, string description, DateTime updatedDate)
+        public void EditNote(Guid collectionId, string title, string description, DateTime updatedDate)
         {
-            
-        }
-        public void EditNote(Note newNote)
-        {
-            this.CollectionId= newNote.CollectionId;
-            this.Title = newNote.Title;
-            this.Description = newNote.Description;
-            this.UpdatedDate = newNote.UpdatedDate;
+            this.CollectionId= collectionId;
+            this.Title = title;
+            this.Description = description;
+            this.UpdatedDate = updatedDate;
 
 
 

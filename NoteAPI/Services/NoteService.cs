@@ -54,7 +54,7 @@ namespace NoteAPI.Services
             //
             // TODO add custom logic for title and description
 
-            oldNote!.EditNote(new Note(
+            oldNote!.EditNote(
                 newNote.CollectionId == Guid.Empty
                 ? oldNote.CollectionId
                 : (await _collectionService.HasCollectionAsync(newNote.CollectionId)
@@ -62,7 +62,7 @@ namespace NoteAPI.Services
                             : throw new NotFoundException($"Collection with given Id:{newNote.CollectionId} does not exist!")),
                 newNote.Title ?? oldNote.Title,
                 newNote.Description ?? oldNote.Description!,
-                newNote.UpdatedDate));
+                newNote.UpdatedDate);
 
             await _noteRepository.UpdateAsync(oldNote);
             }

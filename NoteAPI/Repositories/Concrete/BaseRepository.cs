@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using NoteAPI.Data;
 using NoteAPI.Domain;
 using NoteAPI.Repositories.Abstract;
+using System.Reflection.Metadata.Ecma335;
 
 namespace NoteAPI.Repositories.Concrete
 {
@@ -24,12 +26,12 @@ namespace NoteAPI.Repositories.Concrete
         public async Task DeleteAsync(Guid id)
         {
             await _entities.Where(e => e.Id == id).ExecuteDeleteAsync();
-
+               
         }
 
         public async Task<List<T>> GetAllAsync()
         {
-            return await _entities.ToListAsync();
+           return await _entities.ToListAsync() ?? new List<T>();
         }
 
         public async Task<T?> GetByIdAsync(Guid id)
