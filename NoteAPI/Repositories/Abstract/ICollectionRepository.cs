@@ -6,5 +6,8 @@ namespace NoteAPI.Repositories.Abstract
     {
        Task<Collection?> GetCollectionByTitleAsync(string title);
 
+       Task<bool> HasCollectionAsync(Guid id);
+
+
     }
 }

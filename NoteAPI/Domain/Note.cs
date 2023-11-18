@@ -3,6 +3,7 @@ using NoteAPI.DTOs.Collections;
 using NoteAPI.DTOs.Notes;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.CompilerServices;
 using System.Security.AccessControl;
 
 namespace NoteAPI.Domain
@@ -10,13 +11,15 @@ namespace NoteAPI.Domain
     public class Note : Base
     {
         [Column("FK_COLLECTION_ID")]
-        public Guid CollectionId { get; }
+        public Guid CollectionId { get; private set; }
 
         [Column("TITLE")]
-        public string Title { get; } = null!;
+        public string Title { get; private set; } = null!;
 
         [Column("DESCRIPTION")]
-        public string? Description { get; }
+        public string? Description { get; private set; }
+
+        private Note() { }
 
         public Note(Guid id, Guid collectionId, string title, DateTime createdDate, DateTime updatedDate ,string? description = null)
         {
@@ -26,23 +29,37 @@ namespace NoteAPI.Domain
             this.Description = description;
             this.CreatedDate = createdDate;
             this.UpdatedDate = updatedDate;
+        }
+
+        public void EditNote(Guid collectionId, string title, string description, DateTime updatedDate)
+        {
+            this.CollectionId= collectionId;
+            this.Title = title;
+            this.Description = description;
+            this.UpdatedDate = updatedDate;
+
+
 
         }
 
 
+
+
+
+
+        #region Mappings
         public static explicit operator Note(CreateNoteRequest request)
         {
 
             return new Note
                  
                (
-                 id: Guid.NewGuid(),
+                 Guid.NewGuid(),
                  request.CollectionId,
                  request.Title,
                  DateTime.UtcNow,
                  DateTime.UtcNow,
-                 request.Description
-
+                 request.Description ?? string.Empty
                 );
           
             
@@ -103,7 +120,7 @@ namespace NoteAPI.Domain
                 );
         
         }
-        
 
+        #endregion
     }
 }
