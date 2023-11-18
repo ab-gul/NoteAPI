@@ -1,4 +1,5 @@
-﻿using NoteAPI.DTOs.Collections;
+﻿using Microsoft.IdentityModel.Tokens;
+using NoteAPI.DTOs.Collections;
 using NoteAPI.DTOs.Notes;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,47 +10,61 @@ namespace NoteAPI.Domain
     public class Note : Base
     {
         [Column("FK_COLLECTION_ID")]
-        public Guid CollectionId { get; set; }
+        public Guid CollectionId { get; }
 
         [Column("TITLE")]
-        public string Title { get; set; } = null! ;
+        public string Title { get; } = null!;
 
         [Column("DESCRIPTION")]
-        public string? Description { get; set; }
+        public string? Description { get; }
 
-
-        public static explicit operator Note(CreateNoteRequest request) 
+        public Note(Guid id, Guid collectionId, string title, DateTime createdDate, DateTime updatedDate ,string? description = null)
         {
+            this.Id = id;
+            this.CollectionId = collectionId;
+            this.Title = string.IsNullOrEmpty(title) ? "Unnamed" : title;
+            this.Description = description;
+            this.CreatedDate = createdDate;
+            this.UpdatedDate = updatedDate;
 
-            return new Note
-            { 
-                Id = Guid.NewGuid(),
-                Title = request.Title,
-                Description = request.Description,
-                CollectionId = request.CollectionId,
-                CreatedDate = DateTime.UtcNow,
-                UpdatedDate = DateTime.UtcNow
-
-            };
-        
-        
         }
 
-        public static explicit operator Note(UpdateNoteRequest upRequest)
+
+        public static explicit operator Note(CreateNoteRequest request)
         {
 
             return new Note
-            {
-                Id = Guid.NewGuid(),
-                Title = upRequest.Title,
-                Description = upRequest.Description,
-                UpdatedDate = DateTime.UtcNow,
+                 
+               (
+                 id: Guid.NewGuid(),
+                 request.CollectionId,
+                 request.Title,
+                 DateTime.UtcNow,
+                 DateTime.UtcNow,
+                 request.Description
 
-            };
+                );
+          
+            
+        }
 
+        public static explicit operator Note(UpdateNoteRequest request)
+        {
 
-        }   
-        
+            return new Note
+
+            (
+                Guid.Empty,
+                request.CollectionId ?? Guid.Empty,
+                request.Title,
+                default(DateTime),
+                DateTime.UtcNow,
+                request.Description 
+                ); 
+
+            
+        }
+
 
 
         public static explicit operator GetNoteResponse(Note note) 
@@ -81,12 +96,10 @@ namespace NoteAPI.Domain
         public static explicit operator UpdateNoteResponse(Note note)
         {
             return new UpdateNoteResponse(
-                  
                 Id: note.Id,
                 Title: note.Title,
                 Description: note.Description,
                 UpdatedDate: note.UpdatedDate
-
                 );
         
         }

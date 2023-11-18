@@ -67,13 +67,17 @@ namespace NoteAPI.Services
                 NotFoundException.ThrowIfNull(collection, newNote.CollectionId, nameof(Collection));
 
                 //else
+                var result = new Note(id, collectionId: newNote.CollectionId, title: newNote.Title, 
+                    createdDate: newNote.CreatedDate, updatedDate: newNote.UpdatedDate);
 
-                note.CollectionId = newNote.CollectionId;
+                await _noteRepository.UpdateAsync(newNote);
+                
+                
+                    
+            };
+                
             }
            
-            note!.UpdatedDate = DateTime.UtcNow;
-
-            await _noteRepository.UpdateAsync(newNote);
         }
     }
-}
+
