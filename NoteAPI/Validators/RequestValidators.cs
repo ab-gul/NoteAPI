@@ -11,7 +11,7 @@ namespace NoteAPI.Validators
         {
             if (Guid.TryParse(unValidatedGuid.ToString(), out Guid validatedGuid))
             {
-                return validatedGuid == Guid.Empty;
+                return validatedGuid != Guid.Empty;
                   
             }
             else
@@ -25,7 +25,7 @@ namespace NoteAPI.Validators
         {
             if (Guid.TryParse(unValidatedGuid.ToString(), out Guid validatedGuid))
             {
-                return validatedGuid == Guid.Empty;
+                return validatedGuid != Guid.Empty;
                 
             }
             else

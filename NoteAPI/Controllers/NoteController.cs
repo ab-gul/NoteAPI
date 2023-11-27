@@ -6,6 +6,7 @@ using NoteAPI.Common;
 using NoteAPI.Common.Extensions;
 using FluentValidation;
 using FluentValidation.Results;
+using static NoteAPI.Common.ApiRoutes;
 
 namespace NoteAPI.Controllers
 {
@@ -18,11 +19,14 @@ namespace NoteAPI.Controllers
         }
 
         [HttpGet(ApiRoutes.Notes.GetAll)]
-        public async Task<IActionResult> GetAllNotesAsync()
+        public async Task<IActionResult> GetAllNotesAsync([FromQuery] Guid? collectionId)
         {
-            var notes = await _noteService.GetAllNotesAync();
+            var notes = collectionId == null 
+                ? await _noteService.GetAllNotesAync() 
+                : await _noteService.GetAllNotesAync(collectionId);
 
-            return Ok(notes.Select(note => (GetNoteResponse)note));
+                return Ok(notes.Select(note => (GetNoteResponse)note));
+
         }
 
         [HttpGet(ApiRoutes.Notes.Get)]

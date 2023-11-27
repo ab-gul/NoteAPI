@@ -51,6 +51,16 @@ namespace NoteAPI
 
             builder.Services.AddControllers();
 
+            builder.Services.AddCors( options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.AllowAnyOrigin().
+                           AllowAnyHeader().
+                           AllowAnyMethod();
+                });
+            });
+
             #endregion
 
 
@@ -61,7 +71,7 @@ namespace NoteAPI
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-               
+               app.UseCors();
             }
 
             app.UseHttpsRedirection();

@@ -15,6 +15,11 @@ namespace NoteAPI.Repositories.Concrete
           
         }
 
+        public async Task<List<Note>> GetAllNotesByCollectionIdAsync(Guid collectionId)
+        {
+            return await _entities.Where(n=> n.CollectionId == collectionId).ToListAsync();
+        }
+
         public async Task<List<Note>> GetAllNotesByFilter(int? paginationSize, int? paginationNumber)
         {
             PaginationFilter paginationFilter = new PaginationFilter();
