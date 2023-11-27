@@ -6,6 +6,7 @@ using NoteAPI.DTOs.Notes;
 using NoteAPI.ExceptionHandling;
 using NoteAPI.Repositories.Abstract;
 using NoteAPI.Repositories.Concrete;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NoteAPI.Services
 {
@@ -32,9 +33,11 @@ namespace NoteAPI.Services
             await _noteRepository.DeleteAsync(id);
         }
 
-        public async Task<List<Note>> GetAllNotesAync()
+        public async Task<List<Note>> GetAllNotesAync(Guid? collectionId = null)
         {
-             return await _noteRepository.GetAllAsync();
+             return collectionId == null 
+                ? await _noteRepository.GetAllAsync() 
+                : await _noteRepository.GetAllNotesByCollectionIdAsync((Guid)collectionId) ;
 
         }
 
