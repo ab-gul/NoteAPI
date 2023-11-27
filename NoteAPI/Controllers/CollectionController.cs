@@ -3,6 +3,7 @@ using CollectionAPI.Services;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using NoteAPI.Common;
 using NoteAPI.Domain;
@@ -12,7 +13,6 @@ using static NoteAPI.Common.ApiRoutes;
 
 
 namespace NoteAPI.Controllers;
-
 
 
 public class CollectionController : ControllerBase
