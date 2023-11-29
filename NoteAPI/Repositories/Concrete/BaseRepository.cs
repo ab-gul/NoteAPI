@@ -23,9 +23,9 @@ namespace NoteAPI.Repositories.Concrete
            return entity;
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task<int> DeleteAsync(Guid id)
         {
-            await _entities.Where(e => e.Id == id).ExecuteDeleteAsync();
+            return await _entities.Where(e => e.Id == id).ExecuteDeleteAsync();
                
         }
 

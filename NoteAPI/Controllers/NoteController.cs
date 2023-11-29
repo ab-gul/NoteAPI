@@ -6,6 +6,7 @@ using NoteAPI.Common;
 using NoteAPI.Common.Extensions;
 using FluentValidation;
 using FluentValidation.Results;
+using NoteAPI.Pagination;
 
 namespace NoteAPI.Controllers
 {
@@ -18,11 +19,14 @@ namespace NoteAPI.Controllers
         }
 
         [HttpGet(ApiRoutes.Notes.GetAll)]
-        public async Task<IActionResult> GetAllNotesAsync()
+        public async Task<IActionResult> GetAllNotesAsync([FromQuery] Guid? collectionId)
         {
-            var notes = await _noteService.GetAllNotesAync();
+            var notes = collectionId == null
+                ? await _noteService.GetAllNotesAync(collectionId)
+                : await _noteService.GetAllNotesAync(collectionId);
 
             return Ok(notes.Select(note => (GetNoteResponse)note));
+
         }
 
         [HttpGet(ApiRoutes.Notes.Get)]
@@ -39,11 +43,9 @@ namespace NoteAPI.Controllers
         [HttpDelete(ApiRoutes.Notes.Delete)]
         public async Task<IActionResult> DeleteNoteAsync([FromRoute] Guid id)
         {
-            var note = await _noteService.GetNoteByIdAsync(id);
+            var rowsDeleted = await _noteService.DeleteNoteAsync(id);
 
-            if (note == null) return NotFound($"Note with given id: {id} does not exists!");
-
-            await _noteService.DeleteNoteAsync(id);
+            if (rowsDeleted == 0) return NotFound($"Note with given id: {id} does not exists!");
 
             return NoContent();
         }
@@ -98,7 +100,15 @@ namespace NoteAPI.Controllers
             return Ok((CreateNoteResponse)addedNote);
         }
 
+        [HttpGet(ApiRoutes.Notes.GetAll)]
 
+        public async Task<IActionResult> GetAllNotesByFilter([FromQuery] PaginationFilter filter) 
+        {
+             var page = await _noteService.GetAllNotesByFilter(filter);
+
+             return Ok(page);
+      
+        }
 
     }
 }

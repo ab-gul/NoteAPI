@@ -10,7 +10,7 @@ namespace CollectionAPI.Services
     {
         Task<List<Collection>> GetAllCollectionsAync();
         Task<Collection?> GetCollectionByIdAsync(Guid id);
-        Task DeleteCollectionAsync(Guid id);
+        Task<int> DeleteCollectionAsync(Guid id);
         Task<Collection> AddCollectionAsync(Collection newCollection);
         Task UpdateCollectionAsync(Collection newCollection);
         Task<Collection?> GetCollectionByTitleAsync(string name);

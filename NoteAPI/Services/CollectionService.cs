@@ -24,9 +24,9 @@ namespace CollectionAPI.Services
             return await _collectionRepository.AddAsync(newCollection);
         }
 
-        public async Task DeleteCollectionAsync(Guid id)
+        public async Task<int> DeleteCollectionAsync(Guid id)
         {
-            await _collectionRepository.DeleteAsync(id);
+           return await _collectionRepository.DeleteAsync(id);
         }
 
         public async Task<List<Collection>> GetAllCollectionsAync()

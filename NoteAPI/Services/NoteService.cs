@@ -4,6 +4,7 @@ using NoteAPI.Data;
 using NoteAPI.Domain;
 using NoteAPI.DTOs.Notes;
 using NoteAPI.ExceptionHandling;
+using NoteAPI.Pagination;
 using NoteAPI.Repositories.Abstract;
 using NoteAPI.Repositories.Concrete;
 
@@ -27,15 +28,20 @@ namespace NoteAPI.Services
                    : throw new NotFoundException($"Collection with given Id : {newNote.CollectionId} does not exist!");
         }
 
-        public async Task DeleteNoteAsync(Guid id)
+        public async Task<int> DeleteNoteAsync(Guid id)
         {
-            await _noteRepository.DeleteAsync(id);
+          return await _noteRepository.DeleteAsync(id);
         }
 
-        public async Task<List<Note>> GetAllNotesAync()
+        public async Task<List<Note>> GetAllNotesAync(Guid? id)
         {
              return await _noteRepository.GetAllAsync();
 
+        }
+
+        public async Task<List<Note>> GetAllNotesByFilter(PaginationFilter filter)
+        {
+            return await GetAllNotesByFilter(filter);
         }
 
         public async Task<Note?> GetNoteByIdAsync(Guid id)
