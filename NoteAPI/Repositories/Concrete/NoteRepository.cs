@@ -18,7 +18,8 @@ namespace NoteAPI.Repositories.Concrete
 
         public async Task<List<Note>> GetAllNotesByFilter(PaginationFilter filter)
         {
-            PaginationFilter paginationFilter = new PaginationFilter();
+           
+             PaginationFilter paginationFilter = new PaginationFilter();
 
             var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
 

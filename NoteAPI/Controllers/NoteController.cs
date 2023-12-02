@@ -29,6 +29,18 @@ namespace NoteAPI.Controllers
 
         }
 
+        [HttpGet(ApiRoutes.Notes.GetFilteredNotes)]
+
+        public async Task<IActionResult> GetNotesByFiltering([FromQuery] PaginationFilter filter)
+        {
+
+            var filteredPage = await _noteService.GetAllNotesByFilter(filter);
+
+            return Ok(filteredPage);
+
+        }
+
+
         [HttpGet(ApiRoutes.Notes.Get)]
         public async Task<IActionResult> GetNoteByIdAsync([FromRoute] Guid id)
         {
@@ -66,7 +78,7 @@ namespace NoteAPI.Controllers
                 return ValidationProblem();
             }
 
-           
+
             var noteToUpdate = (Note)request;
 
             await _noteService.UpdateNoteAsync(id, noteToUpdate);
@@ -100,15 +112,9 @@ namespace NoteAPI.Controllers
             return Ok((CreateNoteResponse)addedNote);
         }
 
-        [HttpGet(ApiRoutes.Notes.GetAll)]
 
-        public async Task<IActionResult> GetAllNotesByFilter([FromQuery] PaginationFilter filter) 
-        {
-             var page = await _noteService.GetAllNotesByFilter(filter);
 
-             return Ok(page);
-      
-        }
 
     }
-}
+}  
+

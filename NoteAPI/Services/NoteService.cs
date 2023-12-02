@@ -8,6 +8,7 @@ using NoteAPI.Pagination;
 using NoteAPI.Repositories.Abstract;
 using NoteAPI.Repositories.Concrete;
 
+
 namespace NoteAPI.Services
 {
     public class NoteService : INoteService
@@ -41,7 +42,8 @@ namespace NoteAPI.Services
 
         public async Task<List<Note>> GetAllNotesByFilter(PaginationFilter filter)
         {
-            return await GetAllNotesByFilter(filter);
+          
+                return await GetAllNotesByFilter(filter);
         }
 
         public async Task<Note?> GetNoteByIdAsync(Guid id)
