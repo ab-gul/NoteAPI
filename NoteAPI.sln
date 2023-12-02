@@ -5,7 +5,17 @@ VisualStudioVersion = 17.6.33712.159
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoteAPI", "NoteAPI\NoteAPI.csproj", "{9F931DB7-D66D-448A-8158-334BCEE51092}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoteAPI.Test", "NoteAPI.Test\NoteAPI.Test.csproj", "{CB80FDFD-E6C7-44D4-9C87-D0012A48E526}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoteAPI.Test", "NoteAPI.Test\NoteAPI.Test.csproj", "{CB80FDFD-E6C7-44D4-9C87-D0012A48E526}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "front-end", "front-end", "{3B5FBE43-540C-441F-8EB1-7D1BC8061321}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{8655A40C-4613-424F-B2EC-78C60A673F11}"
+	ProjectSection(SolutionItems) = preProject
+		front-end\backend\index.js = front-end\backend\index.js
+		front-end\backend\page-project-plans.html = front-end\backend\page-project-plans.html
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{17937E2B-5A13-4768-8E8A-DFB888F4EF83}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +34,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8655A40C-4613-424F-B2EC-78C60A673F11} = {3B5FBE43-540C-441F-8EB1-7D1BC8061321}
+		{17937E2B-5A13-4768-8E8A-DFB888F4EF83} = {3B5FBE43-540C-441F-8EB1-7D1BC8061321}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AACE33FC-9591-4B8D-9F8D-7C0FF20E5C5D}

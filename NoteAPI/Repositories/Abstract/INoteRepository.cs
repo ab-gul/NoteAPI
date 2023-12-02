@@ -7,7 +7,7 @@ public interface INoteRepository : IBaseRepository<Note>
 {
     Task<List<Note>> GetAllNotesByFilter(PaginationFilter filter);
    
-
+    Task<List<Note>> GetAllNotesByCollectionIdAsync(Guid collectionId);
 }
 
 

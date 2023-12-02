@@ -21,9 +21,7 @@ namespace NoteAPI.Controllers
         [HttpGet(ApiRoutes.Notes.GetAll)]
         public async Task<IActionResult> GetAllNotesAsync([FromQuery] Guid? collectionId)
         {
-            var notes = collectionId == null
-                ? await _noteService.GetAllNotesAync(collectionId)
-                : await _noteService.GetAllNotesAync(collectionId);
+            var notes =  await _noteService.GetAllNotesAync(collectionId)
 
             return Ok(notes.Select(note => (GetNoteResponse)note));
 
