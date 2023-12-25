@@ -28,8 +28,17 @@ namespace NoteAPI
 
 
             #region Custom
-            builder.Services.AddDbContext<AppDBContext>(options => 
-            options.UseSqlServer(builder.Configuration.GetSection("ConnectionStrings")["SQLServerConnection"]));
+            if (builder.Environment.IsDevelopment())
+            {
+                builder.Services.AddDbContext<AppDBContext>(options =>
+                    options.UseSqlServer(builder.Configuration.GetSection("ConnectionStrings")["Default"]));
+            }
+            else
+            {
+                builder.Services.AddDbContext<AppDBContext>(options =>
+                    options.UseSqlServer(Environment.GetEnvironmentVariable("GOOGLE_SQL_CONNECTIONSTRING")));
+            }
+            
 
             builder.Services.AddScoped<INoteService, NoteService>();
             builder.Services.AddScoped<INoteRepository, NoteRepository>();
