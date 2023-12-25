@@ -3,6 +3,9 @@
 namespace NoteAPI.DTOs.Notes
 {
     #region Requests
+
+    public record GetAllNotesRequesut(Guid? collectionId, int? pageNumber, int? pageSize);
+
     public record UpdateNoteRequest(Guid? CollectionId, string? Title, string? Description);
 
     public record CreateNoteRequest(Guid CollectionId,string Title, string? Description);

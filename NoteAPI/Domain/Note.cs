@@ -37,9 +37,6 @@ namespace NoteAPI.Domain
             this.Title = title;
             this.Description = description;
             this.UpdatedDate = updatedDate;
-
-
-
         }
 
 

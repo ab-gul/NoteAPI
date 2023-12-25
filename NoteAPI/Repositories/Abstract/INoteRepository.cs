@@ -5,9 +5,9 @@ namespace NoteAPI.Repositories.Abstract;
 
 public interface INoteRepository : IBaseRepository<Note>
 {
-    Task<List<Note>> GetAllNotesByFilter(PaginationFilter filter);
+    Task<List<Note>> GetAllAsync(PaginationFilter filter);
    
-    Task<List<Note>> GetAllNotesByCollectionIdAsync(Guid collectionId);
+    Task<List<Note>> GetAllNotesByCollectionIdAsync(Guid collectionId, PaginationFilter filter);
 }
 
 

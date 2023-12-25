@@ -9,7 +9,6 @@ public static class ApiRoutes
     public static class Notes
     {
         public const string GetAll = Base + "/notes";
-        public const string GetFilteredNotes = Base + "/notes/pageNumber=1&pageSize=10";
         public const string Get = Base + "/notes/{id:Guid}";
         public const string Add = Base + "/notes";
         public const string Update = Base + "/notes/{id:Guid}";

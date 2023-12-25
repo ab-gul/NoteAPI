@@ -1,20 +1,31 @@
-﻿namespace NoteAPI.Pagination
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace NoteAPI.Pagination
 {
     public class PaginationFilter
     {
-        public int PageNumber { get; set; }
-        public int PageSize { get; set; }
+        private int minPageSize = 10;
+        private int minPageNumber = 1;
 
-        public PaginationFilter()
+        public int PageNumber { get; private set; }
+
+        public int PageSize { get; private set; }
+
+        public PaginationFilter() : this(null, null)
         {
-            this.PageNumber = 1;
-            this.PageSize = 10;
+                
         }
-        public PaginationFilter(int pageNumber, int pageSize)
+
+        public PaginationFilter(int? pageNumber, int? pageSize)
         {
-            this.PageNumber = pageNumber < 1 ? 1: pageNumber;
-            this.PageSize = pageSize < 10 ? 10 : pageSize;
-            
+            this.PageNumber = pageNumber == null || pageNumber < minPageNumber
+                ? minPageNumber 
+                : (int)pageNumber;
+
+            this.PageSize = pageSize == null || pageSize < minPageSize
+                ? minPageSize
+                : (int)pageSize;
+
         }
     }
 }

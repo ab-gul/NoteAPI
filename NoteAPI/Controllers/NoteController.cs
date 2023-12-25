@@ -7,9 +7,11 @@ using NoteAPI.Common.Extensions;
 using FluentValidation;
 using FluentValidation.Results;
 using NoteAPI.Pagination;
+using Azure.Core;
 
 namespace NoteAPI.Controllers
 {
+    [ApiController]
     public class NoteController : ControllerBase
     {
         private readonly INoteService _noteService;
@@ -19,25 +21,28 @@ namespace NoteAPI.Controllers
         }
 
         [HttpGet(ApiRoutes.Notes.GetAll)]
-        public async Task<IActionResult> GetAllNotesAsync([FromQuery] Guid? collectionId)
+        public async Task<IActionResult> GetAllNotesAsync([FromQuery] GetAllNotesRequesut request,
+            [FromServices] IValidator<GetAllNotesRequesut>? validator)
         {
-            var notes =  await _noteService.GetAllNotesAync(collectionId)
+            ArgumentException.ThrowIfNullOrEmpty(nameof(validator));
 
+            ValidationResult validationResult = validator!.Validate(request);
+
+            if (!validationResult.IsValid)
+            {
+                validationResult.AddToModelState(this.ModelState);
+
+                return ValidationProblem();
+            }
+
+            var notes = await _noteService.GetAllNotesAync(
+                request?.collectionId, 
+                new PaginationFilter(request?.pageNumber, request?.pageSize));
+
+            // TODO remove mapping for each item of list, maybe dynamis mapping
             return Ok(notes.Select(note => (GetNoteResponse)note));
 
         }
-
-        [HttpGet(ApiRoutes.Notes.GetFilteredNotes)]
-
-        public async Task<IActionResult> GetNotesByFiltering([FromQuery] PaginationFilter filter)
-        {
-
-            var filteredPage = await _noteService.GetAllNotesByFilter(filter);
-
-            return Ok(filteredPage);
-
-        }
-
 
         [HttpGet(ApiRoutes.Notes.Get)]
         public async Task<IActionResult> GetNoteByIdAsync([FromRoute] Guid id)

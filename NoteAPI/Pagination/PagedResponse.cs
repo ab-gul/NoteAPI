@@ -1,6 +1,6 @@
 ﻿namespace NoteAPI.Pagination
 {
-    public class PagedResponse<T>: Response<T>
+    public class PagedResponse<T>
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
@@ -13,11 +13,7 @@
         {
             this.PageNumber = pageNumber;
             this.PageSize = pageSize;
-            this.Data = data;
-            this.Message = String.Empty;
-            this.Errors = String.Empty;
-            this.Succeeded = true;
-
+            
 
             
         }

@@ -35,19 +35,21 @@ namespace NoteAPI.Services
           return await _noteRepository.DeleteAsync(id);
         }
 
-        public async Task<List<Note>> GetAllNotesAync(Guid? collectionId = null)
+        public async Task<List<Note>> GetAllNotesAync(Guid? collectionId = null, PaginationFilter? filter = null)
         {
+            filter = filter ?? new PaginationFilter();
+
              return collectionId == null 
-                ? await _noteRepository.GetAllAsync() 
-                : await _noteRepository.GetAllNotesByCollectionIdAsync((Guid)collectionId) ;
+                ? await _noteRepository.GetAllAsync(filter) 
+                : await _noteRepository.GetAllNotesByCollectionIdAsync((Guid)collectionId, filter) ;
 
         }
 
-        public async Task<List<Note>> GetAllNotesByFilter(PaginationFilter filter)
-        {
+        //public async Task<List<Note>> GetAllNotesByFilter(PaginationFilter filter)
+        //{
           
-                return await GetAllNotesByFilter(filter);
-        }
+        //        return await GetAllNotesByFilter(filter);
+        //}
 
         public async Task<Note?> GetNoteByIdAsync(Guid id)
         {
