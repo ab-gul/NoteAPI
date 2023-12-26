@@ -39,7 +39,7 @@ namespace NoteAPI.Controllers
                 request?.collectionId, 
                 new PaginationFilter(request?.pageNumber, request?.pageSize));
 
-            // TODO remove mapping for each item of list, maybe dynamis mapping
+            // TODO remove mapping for each item of list, maybe dynamic mapping
             return Ok(notes.Select(note => (GetNoteResponse)note));
 
         }

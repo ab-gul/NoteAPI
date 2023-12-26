@@ -36,7 +36,7 @@ namespace NoteAPI
             else
             {
                 builder.Services.AddDbContext<AppDBContext>(options =>
-                    options.UseSqlServer(Environment.GetEnvironmentVariable("GOOGLE_SQL_CONNECTIONSTRING")));
+                    options.UseSqlServer(Environment.GetEnvironmentVariable("DB_CONNECTIONSTRING")));
             }
             
 
