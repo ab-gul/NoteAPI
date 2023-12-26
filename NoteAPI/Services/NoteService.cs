@@ -4,9 +4,11 @@ using NoteAPI.Data;
 using NoteAPI.Domain;
 using NoteAPI.DTOs.Notes;
 using NoteAPI.ExceptionHandling;
+using NoteAPI.Pagination;
 using NoteAPI.Repositories.Abstract;
 using NoteAPI.Repositories.Concrete;
 using System.Diagnostics.CodeAnalysis;
+
 
 namespace NoteAPI.Services
 {
@@ -28,18 +30,26 @@ namespace NoteAPI.Services
                    : throw new NotFoundException($"Collection with given Id : {newNote.CollectionId} does not exist!");
         }
 
-        public async Task DeleteNoteAsync(Guid id)
+        public async Task<int> DeleteNoteAsync(Guid id)
         {
-            await _noteRepository.DeleteAsync(id);
+          return await _noteRepository.DeleteAsync(id);
         }
 
-        public async Task<List<Note>> GetAllNotesAync(Guid? collectionId = null)
+        public async Task<List<Note>> GetAllNotesAync(Guid? collectionId = null, PaginationFilter? filter = null)
         {
+            filter = filter ?? new PaginationFilter();
+
              return collectionId == null 
-                ? await _noteRepository.GetAllAsync() 
-                : await _noteRepository.GetAllNotesByCollectionIdAsync((Guid)collectionId) ;
+                ? await _noteRepository.GetAllAsync(filter) 
+                : await _noteRepository.GetAllNotesByCollectionIdAsync((Guid)collectionId, filter) ;
 
         }
+
+        //public async Task<List<Note>> GetAllNotesByFilter(PaginationFilter filter)
+        //{
+          
+        //        return await GetAllNotesByFilter(filter);
+        //}
 
         public async Task<Note?> GetNoteByIdAsync(Guid id)
         {

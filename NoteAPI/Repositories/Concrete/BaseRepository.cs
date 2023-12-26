@@ -23,15 +23,22 @@ namespace NoteAPI.Repositories.Concrete
            return entity;
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task<int> DeleteAsync(Guid id)
         {
-            await _entities.Where(e => e.Id == id).ExecuteDeleteAsync();
+            return await _entities.Where(e => e.Id == id).ExecuteDeleteAsync();
                
         }
 
-        public async Task<List<T>> GetAllAsync()
+        public virtual async Task<List<T>> GetAllAsync(Func<IQueryable<T>, IQueryable<T>>? projection = null)
         {
-           return await _entities.ToListAsync() ?? new List<T>();
+            var query = _entities.AsQueryable();
+
+            if (projection != null)
+            {
+                query = projection(query);
+            }
+
+            return await query.ToListAsync() ?? new List<T>();
         }
 
         public async Task<T?> GetByIdAsync(Guid id)

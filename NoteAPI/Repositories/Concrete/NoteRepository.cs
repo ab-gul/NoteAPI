@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NoteAPI.Data;
 using NoteAPI.Domain;
 using NoteAPI.ExceptionHandling;
+using NoteAPI.Pagination;
 using NoteAPI.Repositories.Abstract;
 
 namespace NoteAPI.Repositories.Concrete
@@ -15,20 +16,19 @@ namespace NoteAPI.Repositories.Concrete
           
         }
 
-        public async Task<List<Note>> GetAllNotesByCollectionIdAsync(Guid collectionId)
+
+        public async Task<List<Note>> GetAllNotesByCollectionIdAsync(Guid collectionId, PaginationFilter filter)
         {
-            return await _entities.Where(n=> n.CollectionId == collectionId).ToListAsync();
+            var skip = (filter.PageNumber - 1) * filter.PageSize;
+
+            return await _entities.Where(n=> n.CollectionId == collectionId).Skip(skip).Take(filter.PageSize).ToListAsync();
         }
 
-        public async Task<List<Note>> GetAllNotesByFilter(int? paginationSize, int? paginationNumber)
+        public  Task<List<Note>> GetAllAsync(PaginationFilter filter)
         {
-            PaginationFilter paginationFilter = new PaginationFilter();
+            var skip = (filter.PageNumber - 1) * filter.PageSize;
 
-            var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
-
-            _entities.Skip(skip);
-            return await _entities.Include(x=>x.Id).ToListAsync();
-
+            return _entities.Skip(skip).Take(filter.PageSize).ToListAsync();
         }
     }
 

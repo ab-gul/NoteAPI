@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoteAPI", "NoteAPI\NoteAPI.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoteAPI.Test", "NoteAPI.Test\NoteAPI.Test.csproj", "{CB80FDFD-E6C7-44D4-9C87-D0012A48E526}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "front-end", "front-end", "{3B5FBE43-540C-441F-8EB1-7D1BC8061321}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WEB", "WEB", "{3B5FBE43-540C-441F-8EB1-7D1BC8061321}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{8655A40C-4613-424F-B2EC-78C60A673F11}"
 	ProjectSection(SolutionItems) = preProject
@@ -16,6 +16,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{8655
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{17937E2B-5A13-4768-8E8A-DFB888F4EF83}"
+EndProject
+<<<<<<< Updated upstream
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DB2CCA28-9E54-44B3-8AE1-2CACA1081D31}"
+	ProjectSection(SolutionItems) = preProject
+=======
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BC432E19-1F0B-41F7-8724-86FBD3205272}"
+	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+>>>>>>> Stashed changes
+		Dockerfile = Dockerfile
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

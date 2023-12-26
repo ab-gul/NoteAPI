@@ -6,10 +6,12 @@ using NoteAPI.Common;
 using NoteAPI.Common.Extensions;
 using FluentValidation;
 using FluentValidation.Results;
-using static NoteAPI.Common.ApiRoutes;
+using NoteAPI.Pagination;
+using Azure.Core;
 
 namespace NoteAPI.Controllers
 {
+    [ApiController]
     public class NoteController : ControllerBase
     {
         private readonly INoteService _noteService;
@@ -19,13 +21,26 @@ namespace NoteAPI.Controllers
         }
 
         [HttpGet(ApiRoutes.Notes.GetAll)]
-        public async Task<IActionResult> GetAllNotesAsync([FromQuery] Guid? collectionId)
+        public async Task<IActionResult> GetAllNotesAsync([FromQuery] GetAllNotesRequesut request,
+            [FromServices] IValidator<GetAllNotesRequesut>? validator)
         {
-            var notes = collectionId == null 
-                ? await _noteService.GetAllNotesAync() 
-                : await _noteService.GetAllNotesAync(collectionId);
+            ArgumentException.ThrowIfNullOrEmpty(nameof(validator));
 
-                return Ok(notes.Select(note => (GetNoteResponse)note));
+            ValidationResult validationResult = validator!.Validate(request);
+
+            if (!validationResult.IsValid)
+            {
+                validationResult.AddToModelState(this.ModelState);
+
+                return ValidationProblem();
+            }
+
+            var notes = await _noteService.GetAllNotesAync(
+                request?.collectionId, 
+                new PaginationFilter(request?.pageNumber, request?.pageSize));
+
+            // TODO remove mapping for each item of list, maybe dynamis mapping
+            return Ok(notes.Select(note => (GetNoteResponse)note));
 
         }
 
@@ -43,11 +58,9 @@ namespace NoteAPI.Controllers
         [HttpDelete(ApiRoutes.Notes.Delete)]
         public async Task<IActionResult> DeleteNoteAsync([FromRoute] Guid id)
         {
-            var note = await _noteService.GetNoteByIdAsync(id);
+            var rowsDeleted = await _noteService.DeleteNoteAsync(id);
 
-            if (note == null) return NotFound($"Note with given id: {id} does not exists!");
-
-            await _noteService.DeleteNoteAsync(id);
+            if (rowsDeleted == 0) return NotFound($"Note with given id: {id} does not exists!");
 
             return NoContent();
         }
@@ -68,7 +81,7 @@ namespace NoteAPI.Controllers
                 return ValidationProblem();
             }
 
-           
+
             var noteToUpdate = (Note)request;
 
             await _noteService.UpdateNoteAsync(id, noteToUpdate);
@@ -104,5 +117,7 @@ namespace NoteAPI.Controllers
 
 
 
+
     }
-}
+}  
+

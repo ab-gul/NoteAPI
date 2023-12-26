@@ -47,14 +47,11 @@ public class CollectionController : ControllerBase
     [HttpDelete(ApiRoutes.Collections.Delete)]
     public async Task<IActionResult> DeleteCollectionAsync([FromRoute] Guid id)
     {
+       var rowsDeleted = await collectionService.DeleteCollectionAsync(id);
 
-        var collection = await collectionService.GetCollectionByIdAsync(id);
+        if (rowsDeleted == 0) { return NotFound(); }
 
-        if (collection != null) { NotFound(); }
-
-        await collectionService.DeleteCollectionAsync(id);
-
-        return NotFound();
+        return NoContent();
     }
 
     [HttpPut(ApiRoutes.Collections.Update)]
