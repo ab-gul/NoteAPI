@@ -8,7 +8,7 @@ namespace NoteAPI.Services
 {
     public interface INoteService 
     {
-        Task<IQueryable<Note>> GetAllNotesAync(Guid? collectionId = null, PaginationFilter? filter = null);
+        Task<List<Note>> GetAllNotesAync(Guid? collectionId = null, PaginationFilter? filter = null);
         Task<Note?> GetNoteByIdAsync(Guid id);
         Task<int> DeleteNoteAsync(Guid id);
         Task<Note> AddNoteAsync(Note newNote);
