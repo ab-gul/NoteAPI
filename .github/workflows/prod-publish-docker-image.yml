@@ -1,8 +1,10 @@
 name: Build and Deploy Docker Image
 
 on:
-  release:
-    types: [published]
+  workflow_run:
+    workflows: ["Prod-Migrate-Database"]
+    types:
+      - completed
     
 jobs:
 
