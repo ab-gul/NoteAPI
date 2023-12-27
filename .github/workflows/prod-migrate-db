@@ -1,0 +1,37 @@
+name: Prod-Migrate-Database
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  update_cloud_sql:
+    runs-on: ubuntu-latest
+    environment: prod
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Generate Migration Script
+        run: |
+          dotnet ef migrations script -o migrations.sql -i -v
+          mkdir migrations
+          cp migrations.sql migrations/
+          echo "Migration script generated"
+
+      - name: Set up Google Cloud CLI
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          version: 'latest'
+
+      - name: Google Auth
+        id: auth
+        uses: 'google-github-actions/auth@v0'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}''
+
+      - name: Update Cloud SQL Schema
+        run: |
+          INSTANCE_NAME=${{ secrets.GCP_SQL_INSTANCE_NAME }}
+          gcloud sql import sql $INSTANCE_NAME ./migrations/migrations.sql
