@@ -20,13 +20,11 @@ jobs:
           echo "Migration script generated"
 
       - name: Set up Google Cloud CLI
-        uses: google-github-actions/setup-gcloud@master
-        with:
-          version: 'latest'
+        uses: 'google-github-actions/setup-gcloud@v2'
 
       - name: Google Auth
         id: auth
-        uses: 'google-github-actions/auth@v0'
+        uses: 'google-github-actions/auth@v2'
         with:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
 
