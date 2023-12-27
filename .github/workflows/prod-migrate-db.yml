@@ -14,6 +14,8 @@ jobs:
 
       - name: Generate Migration Script
         run: |
+          dotnet tool install --global dotnet-ef
+          dotnet tool restore
           set ASPNETCORE_ENVIRONMENT=Production && dotnet ef migrations script -o migrations.sql -i -v
           mkdir migrations
           cp migrations.sql migrations/
