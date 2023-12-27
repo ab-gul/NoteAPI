@@ -21,6 +21,7 @@ jobs:
           mkdir migrations
           cp migrations.sql migrations/
           echo "Migration script generated"
+          echo "File path: $(pwd)/migrations/migrations.sql"
 
       - name: Set up Google Cloud CLI
         uses: 'google-github-actions/setup-gcloud@v2'
