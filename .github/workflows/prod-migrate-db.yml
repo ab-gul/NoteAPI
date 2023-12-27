@@ -6,6 +6,9 @@ on:
 jobs:
   update_cloud_sql:
     runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
     environment: prod
     steps:
       - name: Checkout code
@@ -34,6 +37,5 @@ jobs:
 
       - name: Update Cloud SQL Schema
         run: |
-          ls migrations
           INSTANCE_NAME=${{ secrets.GCP_SQL_INSTANCE_NAME }}
           gcloud sql import sql $INSTANCE_NAME migrations/migrations.sql
