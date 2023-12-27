@@ -31,7 +31,7 @@ namespace NoteAPI
             if (builder.Environment.IsDevelopment())
             {
                 builder.Services.AddDbContext<AppDBContext>(options =>
-                    options.UseSqlServer(builder.Configuration.GetSection("ConnectionStrings")["Default"]));
+                    options.UseSqlite(builder.Configuration.GetSection("ConnectionStrings")["Default"]));
             }
             else
             {
