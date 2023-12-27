@@ -37,6 +37,4 @@ jobs:
 
       - name: Update Cloud SQL Schema
         run: |
-          cat migrations/migrations.sql
-          INSTANCE_NAME=${{ secrets.GCP_SQL_INSTANCE_NAME }}
-          gcloud sql import sql $INSTANCE_NAME migrations/migrations.sql
+          gcloud sql import sql note-app migrations/migrations.sql
