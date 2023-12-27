@@ -399,3 +399,4 @@ FodyWeavers.xsd
 *.sln.iml
 .idea/.idea.NoteAPI/.idea/projectSettingsUpdater.xml
 .idea/.idea.NoteAPI/.idea/workspace.xml
+*.db

@@ -1,18 +1,9 @@
-
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using NoteAPI.Data;
 using NoteAPI.ExceptionHandling;
-using NoteAPI.Domain;
 using NoteAPI.Services;
-using System.Globalization;
 using System.Reflection;
-using NoteAPI.Controllers;
 using CollectionAPI.Services;
-using NoteAPI.Validators;
-using Azure.Core;
-using Microsoft.Identity.Client;
-using Microsoft.AspNetCore.Mvc;
 using FluentValidation;
 using NoteAPI.Repositories.Abstract;
 using NoteAPI.Repositories.Concrete;
@@ -31,14 +22,14 @@ namespace NoteAPI
             if (builder.Environment.IsDevelopment())
             {
                 builder.Services.AddDbContext<AppDBContext>(options =>
-                    options.UseSqlServer(builder.Configuration.GetSection("ConnectionStrings")["Default"]));
+                    options.UseSqlite(builder.Configuration.GetSection("ConnectionStrings")["Default"]));
             }
             else
             {
                 builder.Services.AddDbContext<AppDBContext>(options =>
                     options.UseSqlServer(Environment.GetEnvironmentVariable("DB_CONNECTIONSTRING")));
             }
-            
+
 
             builder.Services.AddScoped<INoteService, NoteService>();
             builder.Services.AddScoped<INoteRepository, NoteRepository>();
@@ -77,6 +68,22 @@ namespace NoteAPI
 
 
             var app = builder.Build();
+
+            // Apply pending migrations
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var dbContext = services.GetRequiredService<AppDBContext>(); 
+                    dbContext.Database.Migrate(); 
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
