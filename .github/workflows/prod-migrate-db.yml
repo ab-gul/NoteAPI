@@ -14,7 +14,7 @@ jobs:
 
       - name: Generate Migration Script
         run: |
-          dotnet ef migrations script -o migrations.sql -i -v
+          set ASPNETCORE_ENVIRONMENT=Production && dotnet ef migrations script -o migrations.sql -i -v
           mkdir migrations
           cp migrations.sql migrations/
           echo "Migration script generated"
