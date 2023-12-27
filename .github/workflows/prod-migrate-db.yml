@@ -35,4 +35,4 @@ jobs:
       - name: Update Cloud SQL Schema
         run: |
           INSTANCE_NAME=${{ secrets.GCP_SQL_INSTANCE_NAME }}
-          gcloud sql import sql $INSTANCE_NAME ./migrations/migrations.sql
+          gcloud sql import sql $INSTANCE_NAME /home/runner/work/NoteAPI/NoteAPI/migrations/migrations.sql
