@@ -1,7 +1,8 @@
 name: Publish-Migration-Script
 
 on:
-  workflow_dispatch
+  release:
+    types: [released]
 
 jobs:
   generate_migrations:
