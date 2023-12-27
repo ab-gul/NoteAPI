@@ -2,13 +2,12 @@ name: Prod-Migrate-Database
 
 on:
   release:
-    types: [published]
+    types: [released]
 
 jobs:
   update_cloud_sql:
     runs-on: ubuntu-latest
     environment: prod
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
