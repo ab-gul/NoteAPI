@@ -3,8 +3,7 @@ name: Build and Deploy Docker Image
 on:
   workflow_run:
     workflows: ["Prod-Migrate-Database"]
-    types:
-      - completed
+    types: [completed]
     
 jobs:
 
