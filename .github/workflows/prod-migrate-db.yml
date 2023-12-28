@@ -20,9 +20,6 @@ jobs:
         id: get_release_version
         run: echo "::set-output name=version::${GITHUB_REF#refs/tags/}"
 
-      - name: Set up environment variables
-        run: echo "MIGRATION_FILE_PATH=migrations/migration-${{ steps.get_release_version.outputs.version }}.sql" >> $GITHUB_ENV 
-
       - name: Google Auth
         id: auth
         uses: 'google-github-actions/auth@v2'
@@ -34,4 +31,4 @@ jobs:
 
       - name: Update Cloud SQL Schema
         run: |
-          gcloud sql import sql note-app "gs://prod-note-app/${{ env.MIGRATION_FILE_PATH }}"
+          gcloud sql import sql note-app "gs://prod-note-app/migrations/migration-${{ steps.get_release_version.outputs.version }}.sql"
