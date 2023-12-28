@@ -28,8 +28,8 @@ jobs:
         run: |
           dotnet tool install --global dotnet-ef
           dotnet tool restore
-          PATH=$(echo $MIGRATION_FILE_PATH)
-          dotnet ef migrations script -o "${PATH}.sql" -i -v --project NoteAPI --startup-project NoteAPI
+          RELEASE_TAG=$(echo $RELEASE_TAG)
+          dotnet ef migrations script -o "migrations/migration-${RELEASE_TAG}.sql" -i -v --project NoteAPI --startup-project NoteAPI
 
       - name: Google Auth
         id: auth
