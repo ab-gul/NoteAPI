@@ -22,13 +22,12 @@ jobs:
       - name: Generate Migration Script
         env:
           ASPNETCORE_ENVIRONMENT: Production
-          RELEASE_VERSION: ${{ github.event.inputs.release-version }}
         run: |
           dotnet tool install --global dotnet-ef
           dotnet tool restore
-          dotnet ef migrations script -o "migrations/migration-${RELEASE_VERSION}.sql" -i -v --project NoteAPI --startup-project NoteAPI
+          dotnet ef migrations script -o "migrations/migration-${{ github.event.release.tag_name }}.sql" -i -v --project NoteAPI --startup-project NoteAPI
           echo "Migration script generated"
-          echo "File path: $(pwd)/migrations/migration-${RELEASE_VERSION}.sql"
+          echo "File path: $(pwd)/migrations/${{ github.event.release.tag_name }}.sql"
 
       - name: Google Auth
         id: auth
@@ -39,5 +38,5 @@ jobs:
       - name: Upload Migration Script to GCP Bucket
         uses: google-github-actions/upload-cloud-storage@v2
         with:
-          path: 'migrations/migration-${{ github.event.inputs.release-version }}.sql'
+          path: 'migrations/migration-${{ github.event.release.tag_name }}.sql'
           destination: 'prod-note-app/migrations/'
