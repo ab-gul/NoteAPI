@@ -40,14 +40,9 @@ jobs:
         with:
           path: '${{ env.MIGRATION_FILE_PATH }}'
           destination: 'prod-note-app/migrations/'
-
-      - name: Set output for share_url job
-        run: echo "::set-output name=file-url::https://console.cloud.google.com/storage/browser/_details/prod-note-app/${{ env.MIGRATION_FILE_PATH }};tab=live_object"
-
-
-  share_url:
-    needs: generate_migrations
-    runs-on: ubuntu-latest
-    steps:
-      - name: Display File
-        run: echo "File URL:${{ needs.generate_migrations.outputs.file-url }}"
+      
+      - name: Show Migration File Content and BUCKET URL
+        run: |
+          echo "Migration File Content:"
+          cat "${{ env.MIGRATION_FILE_PATH }}.sql"
+          echo "File URL: https://console.cloud.google.com/storage/browser/_details/prod-note-app/${{ env.MIGRATION_FILE_PATH }};tab=live_object"
