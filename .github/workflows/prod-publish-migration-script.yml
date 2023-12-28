@@ -34,7 +34,27 @@ jobs:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
 
       - name: Upload Migration Script to GCP Bucket
+        id: upload-to-bucket
         uses: google-github-actions/upload-cloud-storage@v2
         with:
           path: 'migrations/migration-${{ env.RELEASE_TAG }}.sql'
           destination: 'prod-note-app/migrations/'
+
+      - name: Get File URL
+        run: |
+          FILE_PATH="migrations/migration-${{ env.RELEASE_TAG }}.sql"
+          URI=$(gcloud storage signed-url get gs://prod-note-app/${FILE_PATH} --version=4)
+          echo "::set-output name=file-url::${URI}"
+        id: get-file-url
+
+      - name: Save URL as Output
+        if: always()  # Ensure this step always runs
+        run: echo "File URL:${{ steps.upload-to-bucket.outputs.file-url }}" >> $GITHUB_ENV
+
+
+  share_url:
+    needs: generate_migrations
+    runs-on: ubuntu-latest
+    steps:
+      - name: Display File URL
+        run: echo "File URL:${{ needs.generate_migrations.outputs.file-url }}"
