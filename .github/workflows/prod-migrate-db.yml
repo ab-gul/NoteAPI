@@ -16,10 +16,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         
-      - name: Get release version
-        id: get_release_version
-        run: echo "::set-output name=version::${GITHUB_REF#refs/tags/}"
-        if: startsWith(github.ref, 'refs/tags/')
+      - name: Download Release Tag Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: release-tag
+          path: tag-info
 
       - name: Google Auth
         id: auth
@@ -32,4 +33,4 @@ jobs:
 
       - name: Update Cloud SQL Schema
         run: |
-          gcloud sql import sql note-app "gs://prod-note-app/migrations/migration-${{ steps.get_release_version.outputs.version }}.sql"
+          gcloud sql import sql note-app "gs://prod-note-app/migrations/migration-$(cat tag-info/tag-info.txt).sql"
