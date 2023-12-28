@@ -23,10 +23,11 @@ jobs:
       - name: Generate Migration Script
         env:
           ASPNETCORE_ENVIRONMENT: Production
+          PATH: ${{ env.MIGRATION_FILE_PATH }}
         run: |
           dotnet tool install --global dotnet-ef
           dotnet tool restore
-          dotnet ef migrations script -o "migrations/migration-.sql" -i -v --project NoteAPI --startup-project NoteAPI
+          dotnet ef migrations script -o "${PATH}" -i -v --project NoteAPI --startup-project NoteAPI
 
       - name: Google Auth
         id: auth
