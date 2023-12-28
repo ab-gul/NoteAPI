@@ -43,7 +43,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: release-tag
-          path: tag-info.json
+          path: tag-info.txt
 
       - name: Show Migration File Content and BUCKET URL
         run: |
