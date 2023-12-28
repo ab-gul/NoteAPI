@@ -16,7 +16,8 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up environment variables
-        run: echo "RELEASE_TAG=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+        run: echo "MIGRATION_FILE_PATH=migrations/migration-${{ github.event.release.tag_name }}.sql" >> $GITHUB_ENV
+          
 
       - name: Generate Migration Script
         env:
@@ -24,8 +25,8 @@ jobs:
         run: |
           dotnet tool install --global dotnet-ef
           dotnet tool restore
-          RELEASE_TAG=$(echo $RELEASE_TAG)
-          dotnet ef migrations script -o "migrations/migration-${RELEASE_TAG}.sql" -i -v --project NoteAPI --startup-project NoteAPI
+          PATH=$(echo $MIGRATION_FILE_PATH)
+          dotnet ef migrations script -o "$PATH" -i -v --project NoteAPI --startup-project NoteAPI
 
       - name: Google Auth
         id: auth
@@ -37,24 +38,13 @@ jobs:
         id: upload-to-bucket
         uses: google-github-actions/upload-cloud-storage@v2
         with:
-          path: 'migrations/migration-${{ env.RELEASE_TAG }}.sql'
+          path: '${{ env.MIGRATION_FILE_PATH }}'
           destination: 'prod-note-app/migrations/'
-
-      - name: Get File URL
-        run: |
-          FILE_PATH="migrations/migration-${{ env.RELEASE_TAG }}.sql"
-          URI=$(gcloud storage signed-url get gs://prod-note-app/${FILE_PATH} --version=4)
-          echo "::set-output name=file-url::${URI}"
-        id: get-file-url
-
-      - name: Save URL as Output
-        if: always()  # Ensure this step always runs
-        run: echo "File URL:${{ steps.upload-to-bucket.outputs.file-url }}" >> $GITHUB_ENV
 
 
   share_url:
     needs: generate_migrations
     runs-on: ubuntu-latest
     steps:
-      - name: Display File URL
-        run: echo "File URL:${{ needs.generate_migrations.outputs.file-url }}"
+      - name: Display File
+        run: echo "File URL:https://console.cloud.google.com/storage/browser/_details/prod-note-app/${{ env.MIGRATION_FILE_PATH }};tab=live_object"
