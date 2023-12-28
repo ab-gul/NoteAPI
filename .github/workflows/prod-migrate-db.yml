@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up environment variables
-        run: echo "MIGRATION_FILE_PATH=migrations/migration-${{ github.event.release.tag_name }}.sql" >> $GITHUB_ENV 
+        run: echo "MIGRATION_FILE_PATH=migrations/migration-${GITHUB_REF#refs/tags/}.sql" >> $GITHUB_ENV 
 
       - name: Google Auth
         id: auth
@@ -30,4 +30,4 @@ jobs:
 
       - name: Update Cloud SQL Schema
         run: |
-          gcloud sql import sql note-app "${{ env.MIGRATION_FILE_PATH }}"
+          gcloud sql import sql note-app "gs://prod-note-app/${{ env.MIGRATION_FILE_PATH }}"
