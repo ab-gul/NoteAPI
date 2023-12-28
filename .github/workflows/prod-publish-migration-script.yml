@@ -18,7 +18,9 @@ jobs:
 
       - name: Set up environment variables
         run: echo "MIGRATION_FILE_PATH=migrations/migration-${{ github.event.release.tag_name }}" >> $GITHUB_ENV
-          
+        
+      - name: Set up environment variables2
+        run: echo "RELEASE_TAG=${{ github.event.release.tag_name }}" >> $GITHUB_ENV     
 
       - name: Generate Migration Script
         env:
