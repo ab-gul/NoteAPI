@@ -39,6 +39,13 @@ jobs:
         with:
           path: '${{ env.MIGRATION_FILE_PATH }}'
           destination: 'prod-note-app/migrations/'
+
+      - name: Upload Migration Script to GCP Bucket
+        id: upload-to-bucket-latest
+        uses: google-github-actions/upload-cloud-storage@v2
+        with:
+          path: '${{ env.MIGRATION_FILE_PATH }}'
+          destination: 'prod-note-app/migrations/migration-latest.sql'
       
       - name: Show Migration File Content and BUCKET URL
         run: |
