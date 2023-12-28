@@ -44,5 +44,5 @@ jobs:
       - name: Show Migration File Content and BUCKET URL
         run: |
           echo "Migration File Content:"
-          cat "${{ env.MIGRATION_FILE_PATH }}.sql"
+          cat "${{ env.MIGRATION_FILE_PATH }}"
           echo "File URL: https://console.cloud.google.com/storage/browser/_details/prod-note-app/${{ env.MIGRATION_FILE_PATH }};tab=live_object"
