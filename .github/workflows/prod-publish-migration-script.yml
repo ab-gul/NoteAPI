@@ -15,9 +15,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Get release version
-        id: get_release_version
-        run: echo "::set-output name=version::${GITHUB_REF#refs/tags/}"
+      - name: Set up environment variables
+        run: echo "RELEASE_TAG=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
 
       - name: Generate Migration Script
         env:
@@ -25,9 +24,8 @@ jobs:
         run: |
           dotnet tool install --global dotnet-ef
           dotnet tool restore
-          dotnet ef migrations script -o "migrations/migration-${{ github.event.release.tag_name }}.sql" -i -v --project NoteAPI --startup-project NoteAPI
-          echo "Migration script generated"
-          echo "File path: $(pwd)/migrations/${{ github.event.release.tag_name }}.sql"
+          RELEASE_TAG=$(echo $RELEASE_TAG)
+          dotnet ef migrations script -o "migrations/migration-${RELEASE_TAG}.sql" -i -v --project NoteAPI --startup-project NoteAPI
 
       - name: Google Auth
         id: auth
@@ -38,5 +36,5 @@ jobs:
       - name: Upload Migration Script to GCP Bucket
         uses: google-github-actions/upload-cloud-storage@v2
         with:
-          path: 'migrations/migration-${{ github.event.release.tag_name }}.sql'
+          path: 'migrations/migration-${{ env.RELEASE_TAG }}.sql'
           destination: 'prod-note-app/migrations/'
