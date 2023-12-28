@@ -39,6 +39,12 @@ jobs:
           path: '${{ env.MIGRATION_FILE_PATH }}'
           destination: 'prod-note-app/migrations/'
 
+      - name: Upload Release Tag Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: release-tag
+          path: tag-info.txt
+
       - name: Show Migration File Content and BUCKET URL
         run: |
           echo "Migration File Content:"
