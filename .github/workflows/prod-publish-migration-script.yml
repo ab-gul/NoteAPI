@@ -17,10 +17,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up environment variables
-        run: echo "MIGRATION_FILE_PATH=migrations/migration-${{ github.event.release.tag_name }}" >> $GITHUB_ENV
-        
-      - name: Set up environment variables2
-        run: echo "RELEASE_TAG=${{ github.event.release.tag_name }}" >> $GITHUB_ENV     
+        run: echo "MIGRATION_FILE_PATH=migrations/migration-${{ github.event.release.tag_name }}.sql" >> $GITHUB_ENV 
 
       - name: Generate Migration Script
         env:
@@ -29,7 +26,7 @@ jobs:
           dotnet tool install --global dotnet-ef
           dotnet tool restore
           MIGRATION_FILE_PATH=$(echo $MIGRATION_FILE_PATH)
-          dotnet ef migrations script -o "${MIGRATION_FILE_PATH}.sql" -i -v --project NoteAPI --startup-project NoteAPI
+          dotnet ef migrations script -o "${MIGRATION_FILE_PATH}" -i -v --project NoteAPI --startup-project NoteAPI
 
       - name: Google Auth
         id: auth
@@ -41,7 +38,7 @@ jobs:
         id: upload-to-bucket
         uses: google-github-actions/upload-cloud-storage@v2
         with:
-          path: '${{ env.MIGRATION_FILE_PATH }}.sql'
+          path: '${{ env.MIGRATION_FILE_PATH }}'
           destination: 'prod-note-app/migrations/'
 
 
@@ -50,4 +47,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Display File
-        run: echo "File URL:https://console.cloud.google.com/storage/browser/_details/prod-note-app/${{ env.MIGRATION_FILE_PATH }}.sql;tab=live_object"
+        run: echo "File URL:https://console.cloud.google.com/storage/browser/_details/prod-note-app/${{ env.MIGRATION_FILE_PATH }};tab=live_object"
