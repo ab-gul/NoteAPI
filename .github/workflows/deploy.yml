@@ -55,7 +55,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: artifact-migration-${{ needs.generate_migrations.outputs.RELEASE_TAG }}
-        
+          path: migrations
+          
       - name: Authenticate
         uses: 'google-github-actions/auth@v2'
         with:
