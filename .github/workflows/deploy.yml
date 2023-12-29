@@ -66,8 +66,9 @@ jobs:
         uses: google-github-actions/upload-cloud-storage@v2
         with:
           path: '${{ needs.generate_migrations.outputs.MIGRATION_FILE_PATH}}'
-          destination: '${{ secrets.GCP_BUCKET_INSTANCE_NAME}}/migrations/'
-
+          destination: '${{ secrets.GCP_BUCKET_INSTANCE_NAME}}/migrations'
+          process_gcloudignore: false
+          
       - name: Show Migration File Cloud Bucket URL
         run: |
           echo "File URL: https://console.cloud.google.com/storage/browser/_details/${{ secrets.GCP_BUCKET_INSTANCE_NAME}}/${{ needs.generate_migrations.outputs.MIGRATION_FILE_PATH }};tab=live_object"
