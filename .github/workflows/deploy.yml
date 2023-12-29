@@ -44,12 +44,12 @@ jobs:
       - name: Upload
         uses: google-github-actions/upload-cloud-storage@v2
         with:
-          path: '${{ env.MIGRATION_FILE_PATH }}'
+          path: '$MIGRATION_FILE_PATH'
           destination: 'prod-note-app/migrations/'
 
       - name: Show Migration File Cloud Bucket URL
         run: |
-          echo "File URL: https://console.cloud.google.com/storage/browser/_details/prod-note-app/${{ env.MIGRATION_FILE_PATH }};tab=live_object"
+          echo "File URL: https://console.cloud.google.com/storage/browser/_details/prod-note-app/$MIGRATION_FILE_PATH;tab=live_object"
 
   push_to_registry:
     name: Push Docker image to Docker Hub
