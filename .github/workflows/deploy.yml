@@ -21,6 +21,7 @@ jobs:
           echo "MIGRATION_FILE_PATH=migrations/migration-${{ github.event.release.tag_name }}.sql" >> $GITHUB_OUTPUT
           echo "MIGRATION_FILE_PATH=migrations/migration-${{ github.event.release.tag_name }}.sql" >> $GITHUB_ENV
           echo "RELEASE_TAG=${{ github.event.release.tag_name }}" >> $GITHUB_OUTPUT
+          echo "RELEASE_TAG=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
           
       - name: Generate Migration Script
         env:
@@ -35,12 +36,27 @@ jobs:
           echo "Migration File Content:" \n
           cat "${{ env.MIGRATION_FILE_PATH }}"
 
+      - name: Upload Migration Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact-migration-${{ env.RELEASE_TAG }}
+          path: ${{ env.MIGRATION_FILE_PATH }}
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 1
+
   upload_to_bucket:
     name: Upload Migration File to Cloud Bucket
     runs-on: ubuntu-latest
     needs: generate_migrations
     environment: prod
     steps:
+      - name: Download Migration Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: artifact-migration-${{ needs.generate_migrations.outputs.RELEASE_TAG }}
+          path: ${{ needs.generate_migrations.outputs.MIGRATION_FILE_PATH }}
+        
       - name: Authenticate
         uses: 'google-github-actions/auth@v2'
         with:
