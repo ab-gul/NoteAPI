@@ -6,16 +6,18 @@ on:
     
 jobs:
   generate_migrations:
-    name: Generate Migration File
+    name: Generate Migration File 
+    outputs:
+      MIGRATION_FILE_PATH: ${{ steps.set_output.outputs.MIGRATION_FILE_PATH}}
+      RELEASE_TAG: ${{ steps.set_output.outputs.RELEASE_TAG}}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up environment variables
+      - name: Set up output & env variables
+        id: set_output
         run: | 
+          echo "MIGRATION_FILE_PATH=migrations/migration-${{ github.event.release.tag_name }}.sql" >> $GITHUB_OUTPUT
           echo "MIGRATION_FILE_PATH=migrations/migration-${{ github.event.release.tag_name }}.sql" >> $GITHUB_ENV
-          echo "RELEASE_TAG=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+          echo "RELEASE_TAG=${{ github.event.release.tag_name }}" >> $GITHUB_OUTPUT
           
       - name: Generate Migration Script
         env:
@@ -44,12 +46,12 @@ jobs:
       - name: Upload
         uses: google-github-actions/upload-cloud-storage@v2
         with:
-          path: "${{ env.MIGRATION_FILE_PATH }}"
+          path: "${{ needs.generate_migrations.outputs.MIGRATION_FILE_PATH }}"
           destination: 'prod-note-app/migrations/'
 
       - name: Show Migration File Cloud Bucket URL
         run: |
-          echo "File URL: https://console.cloud.google.com/storage/browser/_details/prod-note-app/${{ env.MIGRATION_FILE_PATH }};tab=live_object"
+          echo "File URL: https://console.cloud.google.com/storage/browser/_details/prod-note-app/${{ needs.generate_migrations.outputs.MIGRATION_FILE_PATH }};tab=live_object"
 
   push_to_registry:
     name: Push Docker image to Docker Hub
