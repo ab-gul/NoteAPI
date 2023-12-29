@@ -65,12 +65,12 @@ jobs:
       - name: Upload
         uses: google-github-actions/upload-cloud-storage@v2
         with:
-          path: "${{ needs.generate_migrations.outputs.MIGRATION_FILE_PATH }}"
-          destination: 'prod-note-app/migrations/'
+          path: '${{ needs.generate_migrations.outputs.MIGRATION_FILE_PATH}}'
+          destination: '${{ secrets.GCP_BUCKET_INSTANCE_NAME}}/migrations/'
 
       - name: Show Migration File Cloud Bucket URL
         run: |
-          echo "File URL: https://console.cloud.google.com/storage/browser/_details/prod-note-app/${{ needs.generate_migrations.outputs.MIGRATION_FILE_PATH }};tab=live_object"
+          echo "File URL: https://console.cloud.google.com/storage/browser/_details/${{ secrets.GCP_BUCKET_INSTANCE_NAME}}/${{ needs.generate_migrations.outputs.MIGRATION_FILE_PATH }};tab=live_object"
 
   push_to_registry:
     name: Push Docker image to Docker Hub
@@ -89,7 +89,7 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/note-api:${{ needs.generate_migrations.outputs.RELEASE_TAG }} .
-          docker tag ${{ secrets.DOCKER_USERNAME }}/note-api:${{ needs.generate_migrations.outputs.RELEASE_TAG }} ${{ secrets.DOCKER_USERNAME }}/note-api:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/note-api:${{ needs.generate_migrations.outputs.RELEASE_TAG }}
-          docker push ${{ secrets.DOCKER_USERNAME }}/note-api:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }}:${{ needs.generate_migrations.outputs.RELEASE_TAG }} .
+          docker tag ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }}:${{ needs.generate_migrations.outputs.RELEASE_TAG }} ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }}:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }}:${{ needs.generate_migrations.outputs.RELEASE_TAG }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_NAME }}:latest
