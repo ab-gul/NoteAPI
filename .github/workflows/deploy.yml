@@ -115,4 +115,4 @@ jobs:
 
       - name: Update Cloud SQL Schema
         run: |
-          gcloud sql import sql "${{ GCP_SQL_INSTANCE_NAME }}" "gs://${{ GCP_BUCKET_INSTANCE_NAME }}/${{ needs.generate_migrations.outputs.MIGRATION_FILE_PATH }}" --database=NoteApp
+          gcloud sql import sql ${{ secrets.GCP_SQL_INSTANCE_NAME }} gs://${{ secrets.GCP_BUCKET_INSTANCE_NAME }}/${{ needs.generate_migrations.outputs.MIGRATION_FILE_PATH }} --database=NoteApp
