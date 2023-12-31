@@ -19,9 +19,6 @@ namespace NoteAPI.Domain
         [Column("DESCRIPTION")]
         public string? Description { get; private set; }
 
-        [Column("DESCRIPTION2")]
-        public string? Description2 { get; private set; }
-
         private Note() { }
 
         public Note(Guid id, Guid collectionId, string title, DateTime createdDate, DateTime updatedDate ,string? description = null)
