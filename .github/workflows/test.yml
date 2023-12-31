@@ -16,6 +16,8 @@ jobs:
         
       - name: Check for pending model changes
         run: |
+          dotnet tool install --global dotnet-ef
+          dotnet tool restore
           dotnet ef migrations has-pending-model-changes
           if [ $? -ne 0 ]; then
           echo "There are pending model changes that need to be added to migrations."
