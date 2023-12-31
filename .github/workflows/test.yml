@@ -4,18 +4,30 @@ on:
   workflow_dispatch
   
 jobs:
-  generate_migrations:
-    name: Generate Migration File 
+  update_cloud_sql:
     runs-on: ubuntu-latest
+    environment: prod
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Check for pending model changes
-        run: |
-          dotnet tool install --global dotnet-ef
-          dotnet ef migrations has-pending-model-changes --project NoteAPI --startup-project NoteAPI
-          if [ $? -ne 0 ]; then
-          exit 1
-          fi
+        
+      - name: Google Auth
+        id: auth
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
           
+      - name: Set up Google Cloud CLI
+        uses: 'google-github-actions/setup-gcloud@v2'
+        
+      - name: Bring script from bucket
+        run: |
+          SQL_CONTENT=$(gsutil cat gs://${{ secrets.GCP_BUCKET_INSTANCE_NAME }}/migrations/migration-v0.7.4.sql)
+      
+      - name: Execute script in Cloud SQL
+        run: |
+          echo "${SQL_CONTENT}" | gcloud sql query --instance=${{ secrets.GCP_SQL_INSTANCE_NAME }} --database=NoteApp
+      
+      - name: Update Cloud SQL Schema
+        run: |
+          gcloud sql import sql ${{ secrets.GCP_SQL_INSTANCE_NAME }} gs://${{ secrets.GCP_BUCKET_INSTANCE_NAME }}/migrations/migration-v0.7.4.sql --database=NoteApp
