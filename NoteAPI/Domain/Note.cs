@@ -20,7 +20,7 @@ namespace NoteAPI.Domain
         public string? Description { get; private set; }
 
         [Column("DESCRIPTION2")]
-        public string? Description { get; private set; }
+        public string? Description2 { get; private set; }
 
         private Note() { }
 
