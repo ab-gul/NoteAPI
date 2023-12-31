@@ -14,23 +14,21 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      
+      - name: Build
+        run: dotnet build --no-restore
+        
+      - name: Set up Dotnet tool
+        run: dotnet tool install --global dotnet-ef
         
       - name: Check for pending model changes
+        env:
+          ASPNETCORE_ENVIRONMENT: Production
         run: |
-          dotnet ef migrations has-pending-model-changes
+          dotnet ef migrations has-pending-model-changes --project NoteAPI --startup-project NoteAPI
           if [ $? -ne 0 ]; then
-          echo "There are pending model changes that need to be added to migrations."
           exit 1
           fi
-
-      - name: Install jq
-        run: sudo apt-get install jq
-
-      - name: Extract and Display Pending Migrations
-        run: |
-          migrations=$(dotnet ef migrations list --json | jq '[.[] | select(.applied == false)]')
-          echo "Pending Migrations:"
-          echo "${migrations}"
       
       - name: Set up output & env variables
         id: set_output
@@ -40,20 +38,11 @@ jobs:
           echo "RELEASE_TAG=${{ github.event.release.tag_name }}" >> $GITHUB_OUTPUT
           echo "RELEASE_TAG=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
 
-
-          
       - name: Generate Migration Script
         env:
           ASPNETCORE_ENVIRONMENT: Production
         run: |
-          dotnet tool install --global dotnet-ef
-          dotnet tool restore
-          dotnet ef migrations script -o "${{ env.MIGRATION_FILE_PATH }}" -i -v --project NoteAPI --startup-project NoteAPI
-
-      - name: Show Migration File Content
-        run: |
-          echo "Migration File Content:" \n
-          cat "${{ env.MIGRATION_FILE_PATH }}"
+          dotnet ef migrations script -o "${{ env.MIGRATION_FILE_PATH }}" -i -v --project NoteAPI --startup-project NoteAPI --no-build
 
       - name: Upload Migration Artifact
         uses: actions/upload-artifact@v4
