@@ -24,6 +24,4 @@ jobs:
         run: |
           dotnet ef migrations has-pending-model-changes --project NoteAPI --startup-project NoteAPI
           if [ $? -ne 0 ]; then
-          echo "There are pending model changes that need to be added to migrations."
           exit 1
-          fi
