@@ -11,17 +11,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: 'Create release name'
-        run: |
-         echo "RELEASE_NAME=${{ env.APP }}-${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}" >> ${GITHUB_ENV}
-        
       - name: Check for pending model changes
         run: |
           dotnet tool install --global dotnet-ef
-          
-      - name: Second step
-        run: |
           dotnet ef migrations has-pending-model-changes --project NoteAPI --startup-project NoteAPI --no-build
           if [ $? -ne 0 ]; then
           exit 1
           fi
+          
