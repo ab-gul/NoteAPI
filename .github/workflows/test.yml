@@ -23,11 +23,10 @@ jobs:
       - name: Bring script from bucket
         run: |
           SQL_CONTENT=$(gsutil cat gs://${{ secrets.GCP_BUCKET_INSTANCE_NAME }}/migrations/migration-v0.7.4.sql)
+          echo "${SQL_CONTENT}" > temp.sql
+
       
       - name: Execute script in Cloud SQL
         run: |
-          echo "${SQL_CONTENT}" | gcloud sql query --instance=${{ secrets.GCP_SQL_INSTANCE_NAME }} --database=NoteApp
+          gcloud sql connect ${{ secrets.GCP_SQL_INSTANCE_NAME }} --user=root < temp.sql
       
-      - name: Update Cloud SQL Schema
-        run: |
-          gcloud sql import sql ${{ secrets.GCP_SQL_INSTANCE_NAME }} gs://${{ secrets.GCP_BUCKET_INSTANCE_NAME }}/migrations/migration-v0.7.4.sql --database=NoteApp
