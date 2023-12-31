@@ -6,13 +6,14 @@ on:
 jobs:
   generate_migrations:
     name: Generate Migration File 
-    outputs:
-      MIGRATION_FILE_PATH: ${{ steps.set_output.outputs.MIGRATION_FILE_PATH}}
-      RELEASE_TAG: ${{ steps.set_output.outputs.RELEASE_TAG}}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: 'Create release name'
+        run: |-
+         echo "RELEASE_NAME=${{ env.APP }}-${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}" >> ${GITHUB_ENV}
         
       - name: Check for pending model changes
         run: |
