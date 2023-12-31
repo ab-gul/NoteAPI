@@ -26,3 +26,4 @@ jobs:
           dotnet ef migrations has-pending-model-changes --project NoteAPI --startup-project NoteAPI
           if [ $? -ne 0 ]; then
           exit 1
+          fi
