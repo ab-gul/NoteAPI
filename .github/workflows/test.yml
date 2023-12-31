@@ -23,12 +23,3 @@ jobs:
           echo "There are pending model changes that need to be added to migrations."
           exit 1
           fi
-
-      - name: Install jq
-        run: sudo apt-get install jq
-
-      - name: Extract and Display Pending Migrations
-        run: |
-          migrations=$(dotnet ef migrations list --json | jq '[.[] | select(.applied == false)]')
-          echo "Pending Migrations:"
-          echo "${migrations}"
