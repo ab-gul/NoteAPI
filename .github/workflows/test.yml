@@ -22,7 +22,7 @@ jobs:
           
       - name: Second step
         run: |
-          dotnet ef migrations has-pending-model-changes --project NoteAPI --startup-project NoteAPI
+          dotnet ef migrations has-pending-model-changes --project NoteAPI --startup-project NoteAPI --no-build
           if [ $? -ne 0 ]; then
           exit 1
           fi
