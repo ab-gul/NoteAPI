@@ -19,19 +19,8 @@ jobs:
           
       - name: Set up Google Cloud CLI
         uses: 'google-github-actions/setup-gcloud@v2'
-        
-      - name: Bring script from bucket
-        run: |
-          SQL_CONTENT=$(gsutil cat gs://${{ secrets.GCP_BUCKET_INSTANCE_NAME }}/migrations/migration-v0.7.5.sql)
-          echo "${SQL_CONTENT}" > temp.sql
-          
-      - name: Install mssql-cli
-        run: pip install mssql-cli
+      
       
       - name: Execute script in Cloud SQL
         run: |
           gcloud sql connect ${{ secrets.GCP_SQL_INSTANCE_NAME }} --user=sqlserver --database=NoteApp
-
-      - name: Execute script in Cloud SQL
-        run: \ld
-      
