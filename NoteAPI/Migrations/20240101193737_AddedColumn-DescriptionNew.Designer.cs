@@ -12,8 +12,8 @@ using NoteAPI.Data;
 namespace NoteAPI.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20231227002215_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240101193737_AddedColumn-DescriptionNew")]
+    partial class AddedColumnDescriptionNew
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,6 +70,10 @@ namespace NoteAPI.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("DESCRIPTION");
+
+                    b.Property<string>("DescriptionNew")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("DESCRIPTION_NEW");
 
                     b.Property<string>("Title")
                         .IsRequired()
