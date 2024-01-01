@@ -23,4 +23,4 @@ jobs:
       
       - name: Execute script in Cloud SQL
         run: |
-          gcloud sql connect ${{ secrets.GCP_SQL_INSTANCE_NAME }} --user=sqlserver --database=NoteApp
+          gcloud sql connect ${{ secrets.GCP_SQL_INSTANCE_NAME }} --user=root --database=NoteApp
