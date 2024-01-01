@@ -20,6 +20,8 @@ jobs:
       - name: Set up Google Cloud CLI
         uses: 'google-github-actions/setup-gcloud@v2'
       
+      - name: Install mssql-cli
+        run: sudo apt-get install mssql-cli
       
       - name: Execute script in Cloud SQL
         run: |
