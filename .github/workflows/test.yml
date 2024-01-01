@@ -24,7 +24,9 @@ jobs:
         run: |
           SQL_CONTENT=$(gsutil cat gs://${{ secrets.GCP_BUCKET_INSTANCE_NAME }}/migrations/migration-v0.7.5.sql)
           echo "${SQL_CONTENT}" > temp.sql
-
+          
+      - name: Install mssql-cli
+        run: pip install mssql-cli
       
       - name: Execute script in Cloud SQL
         run: |
